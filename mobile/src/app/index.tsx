@@ -30,7 +30,7 @@ export default function HomeScreen() {
       </View>
       <Button
         label="Get started"
-        onPress={() => router.replace("/home" as never)}
+        onPress={() => router.replace("/login" as never)}
       />
       <Text style={styles.footer}>PRIVATE BY DESIGN / BUILT FOR CLARITY</Text>
     </Screen>

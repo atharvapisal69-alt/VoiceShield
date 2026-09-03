@@ -1,6 +1,7 @@
 import { BrandMark } from "@/components/brand-mark";
 import { Screen } from "@/components/screen";
 import { Colors } from "@/constants/theme";
+import { logOut } from "@/services/auth";
 import { router } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 export default function Profile() {
@@ -28,6 +29,15 @@ export default function Profile() {
         <Text style={styles.key}>VERSION</Text>
         <Text style={styles.value}>0.1.0 / HACKATHON BUILD</Text>
       </View>
+      <Text
+        style={styles.signOut}
+        onPress={async () => {
+          await logOut();
+          router.replace("/login" as never);
+        }}
+      >
+        Sign out
+      </Text>
     </Screen>
   );
 }
@@ -62,4 +72,11 @@ const styles = StyleSheet.create({
     letterSpacing: 1.2,
   },
   value: { color: Colors.text, fontSize: 12, textAlign: "right", flex: 1 },
+  signOut: {
+    color: Colors.red,
+    fontSize: 13,
+    fontWeight: "800",
+    textAlign: "center",
+    marginTop: 34,
+  },
 });
