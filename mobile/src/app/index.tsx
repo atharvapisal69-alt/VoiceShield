@@ -16,7 +16,12 @@ export default function HomeScreen() {
       <View style={styles.hero}>
         <View style={styles.orbit}>
           <View style={styles.orbitCore}>
-            <Text style={styles.wave}>~~~</Text>
+            <View style={styles.lock}>
+              <View style={styles.lockShackle} />
+              <View style={styles.lockBody}>
+                <View style={styles.lockKeyhole} />
+              </View>
+            </View>
           </View>
         </View>
         <Text style={styles.kicker}>WELCOME TO VOICESHIELD</Text>
@@ -71,11 +76,34 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  wave: {
-    color: Colors.cyan,
-    fontSize: 25,
-    fontWeight: "800",
-    letterSpacing: 4,
+  lock: {
+    width: 42,
+    height: 48,
+    alignItems: "center",
+    justifyContent: "flex-end",
+  },
+  lockShackle: {
+    width: 25,
+    height: 24,
+    borderWidth: 5,
+    borderColor: Colors.cyan,
+    borderBottomWidth: 0,
+    borderTopLeftRadius: 14,
+    borderTopRightRadius: 14,
+  },
+  lockBody: {
+    width: 42,
+    height: 29,
+    borderRadius: 7,
+    backgroundColor: Colors.cyan,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  lockKeyhole: {
+    width: 7,
+    height: 11,
+    borderRadius: 4,
+    backgroundColor: Colors.ink,
   },
   kicker: {
     color: Colors.cyan,
