@@ -24,7 +24,7 @@ export default function About() {
       </Text>
       <View style={styles.row}>
         <Text style={styles.key}>MODEL</Text>
-        <Text style={styles.value}>Wav2Vec2 anti-deepfake</Text>
+        <Text style={styles.value}>VoiceShield Sentinel AI</Text>
       </View>
       <View style={styles.row}>
         <Text style={styles.key}>PRIVACY</Text>
@@ -32,7 +32,7 @@ export default function About() {
       </View>
       <View style={styles.row}>
         <Text style={styles.key}>VERSION</Text>
-        <Text style={styles.value}>0.1.0 / HACKATHON BUILD</Text>
+        <Text style={styles.value}>v1.0.0</Text>
       </View>
     </Screen>
   );
