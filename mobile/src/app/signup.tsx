@@ -83,12 +83,15 @@ export default function Signup() {
           onPress={submit}
           disabled={busy}
         />
-        <View style={styles.switch}>
-          <Text style={styles.switchText}>Already have an account?</Text>
-          <Pressable onPress={() => router.push("/login" as never)}>
-            <Text style={styles.link}> Sign in</Text>
-          </Pressable>
-        </View>
+        <Text style={styles.switch}>
+          <Text style={styles.switchText}>Already have an account? </Text>
+          <Text
+            style={styles.link}
+            onPress={() => router.push("/login" as never)}
+          >
+            Sign in
+          </Text>
+        </Text>
       </KeyboardAvoidingView>
     </Screen>
   );
@@ -105,7 +108,11 @@ function Field(props: {
     <View style={styles.field}>
       <Text style={styles.label}>{props.label}</Text>
       <TextInput
-        {...props}
+        value={props.value}
+        onChangeText={props.onChangeText}
+        placeholder={props.placeholder}
+        secureTextEntry={props.secureTextEntry}
+        keyboardType={props.keyboardType}
         style={styles.input}
         placeholderTextColor={Colors.muted}
         autoCorrect={false}
@@ -146,7 +153,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   error: { color: Colors.red, fontSize: 13, marginBottom: 12 },
-  switch: { flexDirection: "row", justifyContent: "center", marginTop: 20 },
+  switch: { textAlign: "center", marginTop: 20 },
   switchText: { color: Colors.muted, fontSize: 13 },
   link: { color: Colors.cyan, fontWeight: "800", fontSize: 13 },
 });

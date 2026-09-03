@@ -76,12 +76,15 @@ export default function Login() {
           onPress={submit}
           disabled={busy}
         />
-        <View style={styles.switch}>
-          <Text style={styles.switchText}>New to VoiceShield?</Text>
-          <Pressable onPress={() => router.push("/signup" as never)}>
-            <Text style={styles.link}> Create an account</Text>
-          </Pressable>
-        </View>
+        <Text style={styles.switch}>
+          <Text style={styles.switchText}>New to VoiceShield? </Text>
+          <Text
+            style={styles.link}
+            onPress={() => router.push("/signup" as never)}
+          >
+            Create an account
+          </Text>
+        </Text>
       </KeyboardAvoidingView>
     </Screen>
   );
@@ -99,7 +102,11 @@ function Field(props: {
     <View style={styles.field}>
       <Text style={styles.label}>{props.label}</Text>
       <TextInput
-        {...props}
+        value={props.value}
+        onChangeText={props.onChangeText}
+        placeholder={props.placeholder}
+        secureTextEntry={props.secureTextEntry}
+        keyboardType={props.keyboardType}
         style={styles.input}
         placeholderTextColor={Colors.muted}
         autoCorrect={false}
@@ -141,7 +148,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   error: { color: Colors.red, fontSize: 13, marginBottom: 12 },
-  switch: { flexDirection: "row", justifyContent: "center", marginTop: 24 },
+  switch: { textAlign: "center", marginTop: 24 },
   switchText: { color: Colors.muted, fontSize: 13 },
   link: { color: Colors.cyan, fontWeight: "800", fontSize: 13 },
 });
