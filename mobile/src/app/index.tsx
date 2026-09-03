@@ -58,39 +58,41 @@ export default function HomeScreen() {
         <Text style={styles.status}>SECURE AUDIO ANALYSIS</Text>
       </View>
       <View style={styles.hero}>
-        <Animated.View
-          style={[
-            styles.orbitGlow,
-            {
-              transform: [{ scale: pulse }],
-              opacity: pulse.interpolate({
-                inputRange: [1, 1.08],
-                outputRange: [0.45, 0.8],
-              }),
-            },
-          ]}
-        />
-        <View style={styles.orbit}>
+        <View style={styles.orbitStage}>
           <Animated.View
             style={[
-              styles.scanBeam,
+              styles.orbitGlow,
               {
-                transform: [
-                  {
-                    translateY: scan.interpolate({
-                      inputRange: [-1, 1],
-                      outputRange: [-65, 65],
-                    }),
-                  },
-                ],
+                transform: [{ scale: pulse }],
+                opacity: pulse.interpolate({
+                  inputRange: [1, 1.08],
+                  outputRange: [0.45, 0.8],
+                }),
               },
             ]}
           />
-          <View style={styles.orbitCore}>
-            <View style={styles.lock}>
-              <View style={styles.lockShackle} />
-              <View style={styles.lockBody}>
-                <View style={styles.lockKeyhole} />
+          <View style={styles.orbit}>
+            <Animated.View
+              style={[
+                styles.scanBeam,
+                {
+                  transform: [
+                    {
+                      translateY: scan.interpolate({
+                        inputRange: [-1, 1],
+                        outputRange: [-65, 65],
+                      }),
+                    },
+                  ],
+                },
+              ]}
+            />
+            <View style={styles.orbitCore}>
+              <View style={styles.lock}>
+                <View style={styles.lockShackle} />
+                <View style={styles.lockBody}>
+                  <View style={styles.lockKeyhole} />
+                </View>
               </View>
             </View>
           </View>
@@ -127,6 +129,13 @@ const styles = StyleSheet.create({
     letterSpacing: 1.2,
   },
   hero: { flex: 1, justifyContent: "center", alignItems: "center" },
+  orbitStage: {
+    width: 200,
+    height: 200,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 24,
+  },
   orbit: {
     width: 180,
     height: 180,
@@ -135,7 +144,6 @@ const styles = StyleSheet.create({
     borderColor: Colors.border,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 42,
     overflow: "hidden",
   },
   orbitGlow: {
