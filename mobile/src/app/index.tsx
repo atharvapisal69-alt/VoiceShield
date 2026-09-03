@@ -107,6 +107,11 @@ export default function HomeScreen() {
         <Text style={styles.copy}>
           Detect AI-generated and manipulated voices before they deceive you.
         </Text>
+        <View style={styles.featureRow}>
+          <Feature value="AI" label="Detection" />
+          <Feature value="24/7" label="Protection" />
+          <Feature value="100%" label="Private" />
+        </View>
       </View>
       <Button
         label="Get started"
@@ -114,6 +119,15 @@ export default function HomeScreen() {
       />
       <Text style={styles.footer}>PRIVATE BY DESIGN / BUILT FOR CLARITY</Text>
     </Screen>
+  );
+}
+
+function Feature({ value, label }: { value: string; label: string }) {
+  return (
+    <View style={styles.feature}>
+      <Text style={styles.featureValue}>{value}</Text>
+      <Text style={styles.featureLabel}>{label}</Text>
+    </View>
   );
 }
 
@@ -130,13 +144,18 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     letterSpacing: 1.2,
   },
-  hero: { flex: 1, justifyContent: "center", alignItems: "center" },
+  hero: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 20,
+  },
   orbitStage: {
     width: 200,
     height: 200,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 24,
+    marginBottom: 30,
   },
   orbit: {
     width: 180,
@@ -233,7 +252,26 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 23,
     maxWidth: 310,
-    marginTop: 20,
+    marginTop: 18,
+  },
+  featureRow: {
+    flexDirection: "row",
+    width: "100%",
+    maxWidth: 360,
+    justifyContent: "space-between",
+    marginTop: 30,
+    paddingTop: 18,
+    borderTopWidth: 1,
+    borderTopColor: Colors.border,
+  },
+  feature: { alignItems: "center", flex: 1 },
+  featureValue: { color: Colors.cyan, fontSize: 14, fontWeight: "800" },
+  featureLabel: {
+    color: Colors.muted,
+    fontSize: 10,
+    fontWeight: "700",
+    letterSpacing: 0.8,
+    marginTop: 5,
   },
   footer: {
     color: Colors.muted,
@@ -241,7 +279,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     letterSpacing: 1.2,
     textAlign: "center",
-    marginTop: 18,
-    marginBottom: 6,
+    marginTop: 16,
+    marginBottom: 8,
   },
 });
