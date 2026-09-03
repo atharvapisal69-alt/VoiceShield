@@ -1,4 +1,35 @@
-# Welcome to your Expo app 👋
+# VoiceShield mobile
+
+The React Native and Expo frontend for VoiceShield, an audio authenticity checker.
+
+## Run locally
+
+```bash
+npm install
+npx expo start
+```
+
+Use Expo Go, an Android emulator, or an iOS simulator. Microphone recording requires a device or development build with microphone permission enabled.
+
+## Backend connection
+
+The app uses a mock `LOW RISK` response when no API URL is configured, so the full presentation flow works without the backend. To connect the analyzer, create a `.env` file in `mobile/`:
+
+```bash
+EXPO_PUBLIC_API_URL=http://192.168.1.10:8000
+```
+
+The API service sends `POST /analyze` as `multipart/form-data` with the selected file in the `audio` field. The expected response contains `label`, `risk_score`, `confidence`, and `explanation`.
+
+## Frontend routes
+
+- Welcome and home dashboard
+- Record voice with `expo-audio`
+- Select WAV, MP3, or M4A with `expo-document-picker`
+- Analysis loading and error states
+- Detection result with risk score, confidence, and explanation
+- Device-local analysis history with AsyncStorage
+- Profile and model information# Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 

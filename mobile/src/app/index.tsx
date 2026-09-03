@@ -1,112 +1,112 @@
-// @ts-nocheck
-import * as Device from "expo-device";
-import type { ReactNode } from "react";
-import { Platform, StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { router } from "expo-router";
+import { StyleSheet, Text, View } from "react-native";
 
-// @ts-expect-error The project TypeScript configuration does not enable JSX for resolved TSX modules.
-import { ThemedText } from "@/components/themed-text";
-// @ts-expect-error The project TypeScript configuration does not enable JSX for resolved TSX modules.
-import { ThemedView } from "@/components/themed-view";
-// @ts-expect-error The project TypeScript configuration does not enable JSX for resolved TSX modules.
-import { WebBadge } from "@/components/web-badge";
-import { BottomTabInset, MaxContentWidth, Spacing } from "@/constants/theme";
-
-function HintRow({ title, hint }: { title: string; hint: ReactNode }) {
-  return (
-    <ThemedView style={styles.hintRow}>
-      <ThemedText type="defaultSemiBold">{title}</ThemedText>
-      {hint}
-    </ThemedView>
-  );
-}
-
-function getDevMenuHint() {
-  if (Platform.OS === "web") {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === "android" ? "cmd+m (or ctrl+m)" : "cmd+d";
-  return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+import { BrandMark } from "@/components/brand-mark";
+import { Button } from "@/components/button";
+import { Screen } from "@/components/screen";
+import { Colors } from "@/constants/theme";
 
 export default function HomeScreen() {
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
-
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
-
-        {Platform.OS === "web" && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+    <Screen scroll={false}>
+      <View style={styles.top}>
+        <BrandMark />
+        <Text style={styles.status}>SECURE AUDIO ANALYSIS</Text>
+      </View>
+      <View style={styles.hero}>
+        <View style={styles.orbit}>
+          <View style={styles.orbitCore}>
+            <Text style={styles.wave}>~~~</Text>
+          </View>
+        </View>
+        <Text style={styles.kicker}>WELCOME TO VOICESHIELD</Text>
+        <Text style={styles.title}>
+          Hear the signal.{"\n"}
+          <Text style={styles.titleAccent}>Trust the voice.</Text>
+        </Text>
+        <Text style={styles.copy}>
+          Detect AI-generated and manipulated voices before they deceive you.
+        </Text>
+      </View>
+      <Button
+        label="Get started"
+        onPress={() => router.replace("/home" as never)}
+      />
+      <Text style={styles.footer}>PRIVATE BY DESIGN / BUILT FOR CLARITY</Text>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
+  top: {
     flexDirection: "row",
-  },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
+    justifyContent: "space-between",
     alignItems: "center",
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
+    paddingTop: 12,
   },
-  heroSection: {
+  status: {
+    color: Colors.muted,
+    fontSize: 9,
+    fontWeight: "800",
+    letterSpacing: 1.2,
+  },
+  hero: { flex: 1, justifyContent: "center", alignItems: "center" },
+  orbit: {
+    width: 180,
+    height: 180,
+    borderRadius: 90,
+    borderWidth: 1,
+    borderColor: Colors.border,
     alignItems: "center",
     justifyContent: "center",
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+    marginBottom: 42,
+  },
+  orbitCore: {
+    width: 108,
+    height: 108,
+    borderRadius: 54,
+    backgroundColor: Colors.panelRaised,
+    borderWidth: 1,
+    borderColor: Colors.blue,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  wave: {
+    color: Colors.cyan,
+    fontSize: 25,
+    fontWeight: "800",
+    letterSpacing: 4,
+  },
+  kicker: {
+    color: Colors.cyan,
+    fontSize: 11,
+    fontWeight: "800",
+    letterSpacing: 2,
+    marginBottom: 14,
   },
   title: {
+    color: Colors.text,
     textAlign: "center",
+    fontSize: 38,
+    lineHeight: 43,
+    fontWeight: "800",
   },
-  code: {
-    textTransform: "uppercase",
+  titleAccent: { color: Colors.blue },
+  copy: {
+    color: Colors.muted,
+    textAlign: "center",
+    fontSize: 15,
+    lineHeight: 23,
+    maxWidth: 310,
+    marginTop: 20,
   },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: "stretch",
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
-  },
-  hintRow: {
-    gap: Spacing.one,
+  footer: {
+    color: Colors.muted,
+    fontSize: 9,
+    fontWeight: "700",
+    letterSpacing: 1.2,
+    textAlign: "center",
+    marginTop: 18,
+    marginBottom: 6,
   },
 });
