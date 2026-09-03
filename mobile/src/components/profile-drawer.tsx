@@ -81,7 +81,7 @@ export function ProfileDrawer({
             onPress={async () => {
               await logOut();
               onClose();
-              router.replace("/login" as never);
+              router.replace("/" as never);
             }}
           >
             <Text style={styles.signOutText}>Sign out</Text>

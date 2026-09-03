@@ -59,7 +59,7 @@ export default function Profile() {
             style={styles.signOut}
             onPress={async () => {
               await logOut();
-              router.replace("/login" as never);
+              router.replace("/" as never);
             }}
           >
             Sign out
