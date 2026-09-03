@@ -1,6 +1,13 @@
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
-import { Animated, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+    Animated,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    Text,
+    View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Colors } from "@/constants/theme";
@@ -18,7 +25,7 @@ export function Screen({
     Animated.timing(entrance, {
       toValue: 1,
       duration: 650,
-      useNativeDriver: true,
+      useNativeDriver: Platform.OS !== "web",
     }).start();
   }, [entrance]);
 
