@@ -1,4 +1,5 @@
 import { BrandMark } from "@/components/brand-mark";
+import { ProfileDrawer } from "@/components/profile-drawer";
 import { Screen, SectionTitle } from "@/components/screen";
 import { Colors } from "@/constants/theme";
 import { faMicrophone } from "@fortawesome/free-solid-svg-icons";
@@ -8,11 +9,13 @@ import { useState, type ReactNode } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function Home() {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
   return (
     <Screen>
       <View style={styles.header}>
         <BrandMark />
-        <Pressable onPress={() => router.push("/profile" as never)}>
+        <Pressable onPress={() => setDrawerOpen(true)}>
           <Text style={styles.avatar}>VS</Text>
         </Pressable>
       </View>
@@ -57,17 +60,10 @@ export default function Home() {
         </View>
         <Text style={styles.chevron}>+</Text>
       </View>
-      <View style={styles.bottom}>
-        <Pressable onPress={() => router.push("/home" as never)}>
-          <Text style={styles.activeNav}>Home</Text>
-        </Pressable>
-        <Pressable onPress={() => router.push("/history" as never)}>
-          <Text style={styles.nav}>History</Text>
-        </Pressable>
-        <Pressable onPress={() => router.push("/profile" as never)}>
-          <Text style={styles.nav}>About</Text>
-        </Pressable>
-      </View>
+      <ProfileDrawer
+        visible={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+      />
     </Screen>
   );
 }
@@ -255,14 +251,4 @@ const styles = StyleSheet.create({
   },
   recentName: { color: Colors.text, fontWeight: "700", marginBottom: 4 },
   chevron: { color: Colors.muted, fontSize: 20 },
-  bottom: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    borderTopWidth: 1,
-    borderTopColor: Colors.border,
-    paddingTop: 20,
-    marginTop: 36,
-  },
-  nav: { color: Colors.muted, fontSize: 12, fontWeight: "700" },
-  activeNav: { color: Colors.cyan, fontSize: 12, fontWeight: "800" },
 });
