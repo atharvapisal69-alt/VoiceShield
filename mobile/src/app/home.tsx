@@ -1,6 +1,8 @@
 import { BrandMark } from "@/components/brand-mark";
 import { Screen, SectionTitle } from "@/components/screen";
 import { Colors } from "@/constants/theme";
+import { faMicrophone } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { router } from "expo-router";
 import { useState, type ReactNode } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
@@ -22,7 +24,9 @@ export default function Home() {
       <View style={styles.actions}>
         <ActionCard
           primary
-          icon={<MicrophoneIcon />}
+          icon={
+            <FontAwesomeIcon icon={faMicrophone} size={42} color={Colors.ink} />
+          }
           title="Record voice"
           hint="Analyze live audio"
           onPress={() => router.push("/record" as never)}
@@ -99,19 +103,6 @@ function ActionCard({
         {hint}
       </Text>
     </Pressable>
-  );
-}
-
-function MicrophoneIcon() {
-  return (
-    <View style={styles.micIcon}>
-      <View style={styles.micSideLeft} />
-      <View style={styles.micHead} />
-      <View style={styles.micSideRight} />
-      <View style={styles.micArc} />
-      <View style={styles.micStem} />
-      <View style={styles.micBase} />
-    </View>
   );
 }
 
@@ -202,51 +193,6 @@ const styles = StyleSheet.create({
   },
   actionHint: { color: Colors.muted, fontSize: 12 },
   primaryHint: { color: "#DCEEFF" },
-  micIcon: { width: 58, height: 56, alignItems: "center" },
-  micSideLeft: {
-    position: "absolute",
-    left: 0,
-    top: 17,
-    width: 4,
-    height: 15,
-    borderRadius: 2,
-    backgroundColor: Colors.ink,
-    opacity: 0.45,
-  },
-  micSideRight: {
-    position: "absolute",
-    right: 0,
-    top: 17,
-    width: 4,
-    height: 15,
-    borderRadius: 2,
-    backgroundColor: Colors.ink,
-    opacity: 0.45,
-  },
-  micHead: {
-    width: 21,
-    height: 31,
-    borderRadius: 11,
-    backgroundColor: Colors.ink,
-  },
-  micArc: {
-    position: "absolute",
-    top: 22,
-    width: 42,
-    height: 27,
-    borderWidth: 4,
-    borderTopWidth: 0,
-    borderColor: Colors.ink,
-    borderBottomLeftRadius: 22,
-    borderBottomRightRadius: 22,
-  },
-  micStem: { width: 4, height: 8, backgroundColor: Colors.ink },
-  micBase: {
-    width: 30,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: Colors.ink,
-  },
   fileIcon: {
     width: 38,
     height: 45,
