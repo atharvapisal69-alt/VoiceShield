@@ -34,6 +34,14 @@ export default function Result() {
         <Text style={[styles.label, { color }]}>{label}</Text>
         <Text style={styles.big}>{(score * 100).toFixed(2)}%</Text>
         <Text style={styles.small}>RISK SCORE</Text>
+        <View style={styles.riskTrack}>
+          <View
+            style={[
+              styles.riskFill,
+              { width: `${Math.max(score * 100, 2)}%`, backgroundColor: color },
+            ]}
+          />
+        </View>
       </View>
       <View style={styles.metrics}>
         <View>
@@ -41,6 +49,11 @@ export default function Result() {
             {(confidence * 100).toFixed(2)}%
           </Text>
           <Text style={styles.small}>CONFIDENCE</Text>
+          <View style={styles.confidenceTrack}>
+            <View
+              style={[styles.confidenceFill, { width: `${confidence * 100}%` }]}
+            />
+          </View>
         </View>
         <View>
           <Text style={styles.metricValue}>
@@ -107,4 +120,26 @@ const styles = StyleSheet.create({
     marginVertical: 24,
   },
   body: { color: Colors.text, lineHeight: 22, fontSize: 14, marginTop: 10 },
+  riskTrack: {
+    width: "78%",
+    height: 5,
+    borderRadius: 3,
+    backgroundColor: Colors.border,
+    marginTop: 18,
+    overflow: "hidden",
+  },
+  riskFill: { height: "100%", borderRadius: 3 },
+  confidenceTrack: {
+    width: 110,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: Colors.border,
+    marginTop: 10,
+    overflow: "hidden",
+  },
+  confidenceFill: {
+    height: "100%",
+    borderRadius: 2,
+    backgroundColor: Colors.cyan,
+  },
 });

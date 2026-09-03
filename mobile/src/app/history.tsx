@@ -3,15 +3,53 @@ import { Colors } from "@/constants/theme";
 import type { AnalysisHistoryItem } from "@/types/analysis";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import { useEffect, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useEffect, useMemo, useState } from "react";
+import {
+    Alert,
+    Pressable,
+    StyleSheet,
+    Text,
+    TextInput,
+    View,
+} from "react-native";
 export default function History() {
   const [items, setItems] = useState<AnalysisHistoryItem[]>([]);
+  const [query, setQuery] = useState("");
   useEffect(() => {
     AsyncStorage.getItem("voiceshield.history").then((value) =>
       setItems(value ? JSON.parse(value) : []),
     );
   }, []);
+  const filteredItems = useMemo(
+    () =>
+      items.filter(
+        (item) =>
+          item.fileName.toLowerCase().includes(query.toLowerCase()) ||
+          item.label.toLowerCase().includes(query.toLowerCase()),
+      ),
+    [items, query],
+  );
+  const deleteItem = async (id: string) => {
+    const next = items.filter((item) => item.id !== id);
+    setItems(next);
+    await AsyncStorage.setItem("voiceshield.history", JSON.stringify(next));
+  };
+  const clearHistory = () =>
+    Alert.alert(
+      "Clear history?",
+      "This removes all saved analysis results from this device.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Clear",
+          style: "destructive",
+          onPress: async () => {
+            setItems([]);
+            await AsyncStorage.removeItem("voiceshield.history");
+          },
+        },
+      ],
+    );
   return (
     <Screen>
       <Text
@@ -24,6 +62,20 @@ export default function History() {
       <Text style={styles.copy}>
         A private record of the voices you have checked on this device.
       </Text>
+      {items.length > 0 && (
+        <View style={styles.tools}>
+          <TextInput
+            value={query}
+            onChangeText={setQuery}
+            placeholder="Search analyses"
+            placeholderTextColor={Colors.muted}
+            style={styles.search}
+          />
+          <Pressable onPress={clearHistory}>
+            <Text style={styles.clear}>Clear all</Text>
+          </Pressable>
+        </View>
+      )}
       {items.length === 0 ? (
         <View style={styles.empty}>
           <Text style={styles.emptyTitle}>Nothing scanned yet</Text>
@@ -34,8 +86,10 @@ export default function History() {
             <Text style={styles.link}>Start a scan</Text>
           </Pressable>
         </View>
+      ) : filteredItems.length === 0 ? (
+        <Text style={styles.noResults}>No matching analyses.</Text>
       ) : (
-        items.map((item) => (
+        filteredItems.map((item) => (
           <Pressable
             key={item.id}
             style={styles.item}
@@ -64,6 +118,9 @@ export default function History() {
               </Text>
             </View>
             <Text style={styles.label}>{item.label.replace(" RISK", "")}</Text>
+            <Pressable onPress={() => deleteItem(item.id)} hitSlop={10}>
+              <Text style={styles.delete}>×</Text>
+            </Pressable>
           </Pressable>
         ))
       )}
@@ -99,4 +156,25 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     letterSpacing: 1,
   },
+  tools: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    marginTop: 22,
+    marginBottom: 8,
+  },
+  search: {
+    flex: 1,
+    minHeight: 44,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    backgroundColor: Colors.panel,
+    color: Colors.text,
+    paddingHorizontal: 14,
+    fontSize: 13,
+  },
+  clear: { color: Colors.red, fontSize: 12, fontWeight: "800" },
+  delete: { color: Colors.red, fontSize: 22, lineHeight: 22, paddingLeft: 5 },
+  noResults: { color: Colors.muted, textAlign: "center", paddingVertical: 32 },
 });
