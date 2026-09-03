@@ -1,5 +1,6 @@
 import { router } from "expo-router";
-import { StyleSheet, Text, View } from "react-native";
+import { useEffect, useState } from "react";
+import { Animated, Easing, StyleSheet, Text, View } from "react-native";
 
 import { BrandMark } from "@/components/brand-mark";
 import { Button } from "@/components/button";
@@ -7,6 +8,42 @@ import { Screen } from "@/components/screen";
 import { Colors } from "@/constants/theme";
 
 export default function HomeScreen() {
+  const [pulse] = useState(() => new Animated.Value(1));
+  const [scan] = useState(() => new Animated.Value(-1));
+
+  useEffect(() => {
+    const breathing = Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulse, {
+          toValue: 1.08,
+          duration: 1800,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: true,
+        }),
+        Animated.timing(pulse, {
+          toValue: 1,
+          duration: 1800,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: true,
+        }),
+      ]),
+    );
+    const scanning = Animated.loop(
+      Animated.timing(scan, {
+        toValue: 1,
+        duration: 2600,
+        easing: Easing.inOut(Easing.ease),
+        useNativeDriver: true,
+      }),
+    );
+    breathing.start();
+    scanning.start();
+    return () => {
+      breathing.stop();
+      scanning.stop();
+    };
+  }, [pulse, scan]);
+
   return (
     <Screen scroll={false}>
       <View style={styles.top}>
@@ -14,7 +51,34 @@ export default function HomeScreen() {
         <Text style={styles.status}>SECURE AUDIO ANALYSIS</Text>
       </View>
       <View style={styles.hero}>
+        <Animated.View
+          style={[
+            styles.orbitGlow,
+            {
+              transform: [{ scale: pulse }],
+              opacity: pulse.interpolate({
+                inputRange: [1, 1.08],
+                outputRange: [0.45, 0.8],
+              }),
+            },
+          ]}
+        />
         <View style={styles.orbit}>
+          <Animated.View
+            style={[
+              styles.scanBeam,
+              {
+                transform: [
+                  {
+                    translateY: scan.interpolate({
+                      inputRange: [-1, 1],
+                      outputRange: [-65, 65],
+                    }),
+                  },
+                ],
+              },
+            ]}
+          />
           <View style={styles.orbitCore}>
             <View style={styles.lock}>
               <View style={styles.lockShackle} />
@@ -65,6 +129,31 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 42,
+    overflow: "hidden",
+  },
+  orbitGlow: {
+    position: "absolute",
+    width: 188,
+    height: 188,
+    borderRadius: 94,
+    borderWidth: 8,
+    borderColor: Colors.blue,
+    shadowColor: Colors.cyan,
+    shadowOpacity: 0.8,
+    shadowRadius: 28,
+    shadowOffset: { width: 0, height: 0 },
+    elevation: 12,
+  },
+  scanBeam: {
+    position: "absolute",
+    left: 24,
+    right: 24,
+    height: 1,
+    backgroundColor: Colors.cyan,
+    opacity: 0.55,
+    shadowColor: Colors.cyan,
+    shadowOpacity: 1,
+    shadowRadius: 8,
   },
   orbitCore: {
     width: 108,

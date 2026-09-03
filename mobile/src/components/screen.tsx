@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { useEffect, useState } from "react";
+import { Animated, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Colors } from "@/constants/theme";
@@ -11,7 +12,36 @@ export function Screen({
   children: ReactNode;
   scroll?: boolean;
 }) {
-  const content = <View style={styles.content}>{children}</View>;
+  const [entrance] = useState(() => new Animated.Value(0));
+
+  useEffect(() => {
+    Animated.timing(entrance, {
+      toValue: 1,
+      duration: 650,
+      useNativeDriver: true,
+    }).start();
+  }, [entrance]);
+
+  const content = (
+    <Animated.View
+      style={[
+        styles.content,
+        {
+          opacity: entrance,
+          transform: [
+            {
+              translateY: entrance.interpolate({
+                inputRange: [0, 1],
+                outputRange: [18, 0],
+              }),
+            },
+          ],
+        },
+      ]}
+    >
+      {children}
+    </Animated.View>
+  );
   return (
     <SafeAreaView style={styles.safe}>
       {scroll ? (
