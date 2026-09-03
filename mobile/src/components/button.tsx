@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Pressable, StyleSheet, Text, type PressableProps } from "react-native";
 
 import { Colors } from "@/constants/theme";
@@ -8,13 +9,17 @@ type Props = PressableProps & {
 };
 
 export function Button({ label, tone = "primary", style, ...props }: Props) {
+  const [hovered, setHovered] = useState(false);
+
   return (
     <Pressable
       {...props}
+      onHoverIn={() => setHovered(true)}
+      onHoverOut={() => setHovered(false)}
       style={(state) => [
         styles.base,
         styles[tone],
-        state.pressed && styles.pressed,
+        (state.pressed || hovered) && styles.lifted,
         typeof style === "function" ? style(state) : style,
       ]}
     >
@@ -48,5 +53,13 @@ const styles = StyleSheet.create({
   label: { fontSize: 16, fontWeight: "700" },
   primaryLabel: { color: Colors.ink },
   secondaryLabel: { color: Colors.text },
-  pressed: { opacity: 0.72 },
+  lifted: {
+    opacity: 0.86,
+    transform: [{ translateY: -2 }],
+    shadowColor: Colors.cyan,
+    shadowOpacity: 0.35,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 5 },
+    elevation: 5,
+  },
 });

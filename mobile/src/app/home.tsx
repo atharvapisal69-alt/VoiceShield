@@ -2,6 +2,7 @@ import { BrandMark } from "@/components/brand-mark";
 import { Screen, SectionTitle } from "@/components/screen";
 import { Colors } from "@/constants/theme";
 import { router } from "expo-router";
+import { useState, type ReactNode } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function Home() {
@@ -19,24 +20,19 @@ export default function Home() {
         Protect yourself from AI-generated and manipulated voices.
       </Text>
       <View style={styles.actions}>
-        <Pressable
-          style={[styles.action, styles.primary]}
+        <ActionCard
+          primary
+          icon={<MicrophoneIcon />}
+          title="Record voice"
+          hint="Analyze live audio"
           onPress={() => router.push("/record" as never)}
-        >
-          <Text style={styles.actionIcon}>REC</Text>
-          <Text style={styles.actionTitle}>Record voice</Text>
-          <Text style={styles.actionHint}>Analyze live audio</Text>
-        </Pressable>
-        <Pressable
-          style={styles.action}
+        />
+        <ActionCard
+          icon={<FileIcon />}
+          title="Upload audio"
+          hint="WAV, MP3, M4A"
           onPress={() => router.push("/upload" as never)}
-        >
-          <Text style={[styles.actionIcon, { color: Colors.purple }]}>
-            FILE
-          </Text>
-          <Text style={styles.actionTitle}>Upload audio</Text>
-          <Text style={styles.actionHint}>WAV, MP3, M4A</Text>
-        </Pressable>
+        />
       </View>
       <SectionTitle
         eyebrow="YOUR ACTIVITY"
@@ -71,6 +67,62 @@ export default function Home() {
     </Screen>
   );
 }
+
+function ActionCard({
+  primary = false,
+  icon,
+  title,
+  hint,
+  onPress,
+}: {
+  primary?: boolean;
+  icon: ReactNode;
+  title: string;
+  hint: string;
+  onPress: () => void;
+}) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <Pressable
+      onPress={onPress}
+      onHoverIn={() => setHovered(true)}
+      onHoverOut={() => setHovered(false)}
+      style={[
+        styles.action,
+        primary && styles.primary,
+        hovered && styles.actionHovered,
+      ]}
+    >
+      <View style={styles.actionIcon}>{icon}</View>
+      <Text style={styles.actionTitle}>{title}</Text>
+      <Text style={[styles.actionHint, primary && styles.primaryHint]}>
+        {hint}
+      </Text>
+    </Pressable>
+  );
+}
+
+function MicrophoneIcon() {
+  return (
+    <View style={styles.micIcon}>
+      <View style={styles.micHead} />
+      <View style={styles.micArc} />
+      <View style={styles.micStem} />
+      <View style={styles.micBase} />
+    </View>
+  );
+}
+
+function FileIcon() {
+  return (
+    <View style={styles.fileIcon}>
+      <View style={styles.fileFold} />
+      <View style={styles.fileLineOne} />
+      <View style={styles.fileLineTwo} />
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
@@ -123,10 +175,17 @@ const styles = StyleSheet.create({
   },
   primary: { backgroundColor: Colors.blue, borderColor: Colors.blue },
   actionIcon: {
-    color: Colors.ink,
-    fontSize: 12,
-    fontWeight: "900",
     marginBottom: "auto",
+    height: 56,
+    justifyContent: "flex-start",
+  },
+  actionHovered: {
+    transform: [{ translateY: -5 }],
+    shadowColor: Colors.cyan,
+    shadowOpacity: 0.35,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 8,
   },
   actionTitle: {
     color: Colors.text,
@@ -135,6 +194,55 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   actionHint: { color: Colors.muted, fontSize: 12 },
+  primaryHint: { color: "#DCEEFF" },
+  micIcon: { width: 50, height: 56, alignItems: "center" },
+  micHead: {
+    width: 21,
+    height: 31,
+    borderRadius: 11,
+    backgroundColor: Colors.ink,
+  },
+  micArc: {
+    position: "absolute",
+    top: 22,
+    width: 42,
+    height: 27,
+    borderWidth: 4,
+    borderTopWidth: 0,
+    borderColor: Colors.ink,
+    borderBottomLeftRadius: 22,
+    borderBottomRightRadius: 22,
+  },
+  micStem: { width: 4, height: 8, backgroundColor: Colors.ink },
+  micBase: {
+    width: 30,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: Colors.ink,
+  },
+  fileIcon: {
+    width: 31,
+    height: 38,
+    borderWidth: 2,
+    borderColor: Colors.purple,
+    borderRadius: 5,
+    paddingTop: 15,
+    paddingHorizontal: 6,
+  },
+  fileFold: {
+    position: "absolute",
+    top: -2,
+    right: -2,
+    width: 10,
+    height: 10,
+    borderLeftWidth: 2,
+    borderBottomWidth: 2,
+    borderColor: Colors.purple,
+    backgroundColor: Colors.panel,
+    borderBottomLeftRadius: 3,
+  },
+  fileLineOne: { height: 2, backgroundColor: Colors.purple, marginBottom: 5 },
+  fileLineTwo: { height: 2, width: "70%", backgroundColor: Colors.purple },
   link: { color: Colors.blue, fontSize: 12, fontWeight: "700" },
   recent: {
     flexDirection: "row",
