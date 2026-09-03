@@ -19,7 +19,7 @@ export default function Home() {
           <Text style={styles.avatar}>VS</Text>
         </Pressable>
       </View>
-      <Text style={styles.greeting}>GOOD MORNING</Text>
+      <Text style={styles.greeting}>WELCOME BACK</Text>
       <Text style={styles.title}>Keep every conversation honest.</Text>
       <Text style={styles.copy}>
         Protect yourself from AI-generated and manipulated voices.
