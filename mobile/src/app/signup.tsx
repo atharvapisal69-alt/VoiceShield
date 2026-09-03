@@ -44,11 +44,7 @@ export default function Signup() {
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={styles.container}
       >
-        <Pressable
-          onPress={() =>
-            router.canGoBack() ? router.back() : router.replace("/" as never)
-          }
-        >
+        <Pressable onPress={() => router.replace("/" as never)}>
           <Text style={styles.back}>Back</Text>
         </Pressable>
         <View style={styles.brand}>
