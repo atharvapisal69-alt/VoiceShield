@@ -68,9 +68,13 @@ export function ProfileDrawer({
           <Text style={styles.kicker}>VOICESHIELD MENU</Text>
           <Text style={styles.title}>Navigate safely.</Text>
           <View style={styles.menu}>
-            <MenuItem label="Home" path="/home" onClose={onClose} />
             <MenuItem label="History" path="/history" onClose={onClose} />
             <MenuItem label="About" path="/about" onClose={onClose} />
+            <MenuItem
+              label="Profile details"
+              path="/profile-details"
+              onClose={onClose}
+            />
           </View>
           <Pressable
             style={styles.signOut}
