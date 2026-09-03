@@ -105,7 +105,9 @@ function ActionCard({
 function MicrophoneIcon() {
   return (
     <View style={styles.micIcon}>
+      <View style={styles.micSideLeft} />
       <View style={styles.micHead} />
+      <View style={styles.micSideRight} />
       <View style={styles.micArc} />
       <View style={styles.micStem} />
       <View style={styles.micBase} />
@@ -117,8 +119,13 @@ function FileIcon() {
   return (
     <View style={styles.fileIcon}>
       <View style={styles.fileFold} />
-      <View style={styles.fileLineOne} />
-      <View style={styles.fileLineTwo} />
+      <View style={styles.audioWave}>
+        <View style={styles.audioBarShort} />
+        <View style={styles.audioBarTall} />
+        <View style={styles.audioBarMedium} />
+        <View style={styles.audioBarTall} />
+        <View style={styles.audioBarShort} />
+      </View>
     </View>
   );
 }
@@ -195,7 +202,27 @@ const styles = StyleSheet.create({
   },
   actionHint: { color: Colors.muted, fontSize: 12 },
   primaryHint: { color: "#DCEEFF" },
-  micIcon: { width: 50, height: 56, alignItems: "center" },
+  micIcon: { width: 58, height: 56, alignItems: "center" },
+  micSideLeft: {
+    position: "absolute",
+    left: 0,
+    top: 17,
+    width: 4,
+    height: 15,
+    borderRadius: 2,
+    backgroundColor: Colors.ink,
+    opacity: 0.45,
+  },
+  micSideRight: {
+    position: "absolute",
+    right: 0,
+    top: 17,
+    width: 4,
+    height: 15,
+    borderRadius: 2,
+    backgroundColor: Colors.ink,
+    opacity: 0.45,
+  },
   micHead: {
     width: 21,
     height: 31,
@@ -221,28 +248,50 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.ink,
   },
   fileIcon: {
-    width: 31,
-    height: 38,
+    width: 38,
+    height: 45,
     borderWidth: 2,
     borderColor: Colors.purple,
     borderRadius: 5,
-    paddingTop: 15,
-    paddingHorizontal: 6,
+    paddingTop: 18,
+    paddingHorizontal: 7,
   },
   fileFold: {
     position: "absolute",
     top: -2,
     right: -2,
-    width: 10,
-    height: 10,
+    width: 12,
+    height: 12,
     borderLeftWidth: 2,
     borderBottomWidth: 2,
     borderColor: Colors.purple,
     backgroundColor: Colors.panel,
     borderBottomLeftRadius: 3,
   },
-  fileLineOne: { height: 2, backgroundColor: Colors.purple, marginBottom: 5 },
-  fileLineTwo: { height: 2, width: "70%", backgroundColor: Colors.purple },
+  audioWave: {
+    height: 17,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  audioBarShort: {
+    width: 2,
+    height: 6,
+    backgroundColor: Colors.purple,
+    borderRadius: 1,
+  },
+  audioBarTall: {
+    width: 2,
+    height: 15,
+    backgroundColor: Colors.purple,
+    borderRadius: 1,
+  },
+  audioBarMedium: {
+    width: 2,
+    height: 10,
+    backgroundColor: Colors.purple,
+    borderRadius: 1,
+  },
   link: { color: Colors.blue, fontSize: 12, fontWeight: "700" },
   recent: {
     flexDirection: "row",
