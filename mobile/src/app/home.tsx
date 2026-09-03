@@ -24,6 +24,13 @@ export default function Home() {
       <Text style={styles.copy}>
         Protect yourself from AI-generated and manipulated voices.
       </Text>
+      <View style={styles.systemStrip}>
+        <View style={styles.systemStatus}>
+          <View style={styles.systemDot} />
+          <Text style={styles.systemLabel}>SYSTEM READY</Text>
+        </View>
+        <Text style={styles.systemMeta}>ENCRYPTED SESSION</Text>
+      </View>
       <View style={styles.actions}>
         <ActionCard
           primary
@@ -40,6 +47,25 @@ export default function Home() {
           hint="WAV, MP3, M4A"
           onPress={() => router.push("/upload" as never)}
         />
+      </View>
+      <View style={styles.snapshot}>
+        <View style={styles.snapshotHeader}>
+          <Text style={styles.snapshotEyebrow}>PROTECTION LAYER</Text>
+          <Text style={styles.snapshotValue}>ACTIVE</Text>
+        </View>
+        <Text style={styles.snapshotTitle}>
+          Voice intelligence is standing by.
+        </Text>
+        <Text style={styles.snapshotCopy}>
+          Choose a recording to begin a private authenticity check.
+        </Text>
+        <View style={styles.snapshotTrack}>
+          <View style={styles.snapshotFill} />
+        </View>
+        <View style={styles.snapshotFoot}>
+          <Text style={styles.snapshotHint}>MODEL STATUS</Text>
+          <Text style={styles.snapshotHint}>READY TO ANALYZE</Text>
+        </View>
       </View>
       <SectionTitle
         eyebrow="YOUR ACTIVITY"
@@ -189,6 +215,102 @@ const styles = StyleSheet.create({
   },
   actionHint: { color: Colors.muted, fontSize: 12 },
   primaryHint: { color: "#DCEEFF" },
+  systemStrip: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: Colors.panel,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 11,
+    marginBottom: 18,
+  },
+  systemStatus: { flexDirection: "row", alignItems: "center", gap: 8 },
+  systemDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+    backgroundColor: Colors.green,
+    shadowColor: Colors.green,
+    shadowOpacity: 0.8,
+    shadowRadius: 7,
+    shadowOffset: { width: 0, height: 0 },
+  },
+  systemLabel: {
+    color: Colors.green,
+    fontSize: 10,
+    fontWeight: "800",
+    letterSpacing: 1,
+  },
+  systemMeta: {
+    color: Colors.muted,
+    fontSize: 9,
+    fontWeight: "700",
+    letterSpacing: 0.8,
+  },
+  snapshot: {
+    backgroundColor: Colors.panelRaised,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    padding: 18,
+    marginBottom: 38,
+  },
+  snapshotHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  snapshotEyebrow: {
+    color: Colors.cyan,
+    fontSize: 10,
+    fontWeight: "800",
+    letterSpacing: 1.2,
+  },
+  snapshotValue: {
+    color: Colors.green,
+    fontSize: 10,
+    fontWeight: "800",
+    letterSpacing: 1,
+  },
+  snapshotTitle: {
+    color: Colors.text,
+    fontSize: 18,
+    fontWeight: "800",
+    marginTop: 17,
+  },
+  snapshotCopy: {
+    color: Colors.muted,
+    fontSize: 13,
+    lineHeight: 20,
+    marginTop: 6,
+  },
+  snapshotTrack: {
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: Colors.border,
+    marginTop: 20,
+    overflow: "hidden",
+  },
+  snapshotFill: {
+    height: "100%",
+    width: "72%",
+    borderRadius: 2,
+    backgroundColor: Colors.cyan,
+  },
+  snapshotFoot: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 9,
+  },
+  snapshotHint: {
+    color: Colors.muted,
+    fontSize: 9,
+    fontWeight: "700",
+    letterSpacing: 0.8,
+  },
   fileIcon: {
     width: 38,
     height: 45,

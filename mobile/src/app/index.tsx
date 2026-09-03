@@ -17,6 +17,7 @@ import { Colors } from "@/constants/theme";
 export default function HomeScreen() {
   const [pulse] = useState(() => new Animated.Value(1));
   const [scan] = useState(() => new Animated.Value(-1));
+  const [signal] = useState(() => new Animated.Value(0.35));
 
   useEffect(() => {
     const breathing = Animated.loop(
@@ -43,19 +44,40 @@ export default function HomeScreen() {
         useNativeDriver: Platform.OS !== "web",
       }),
     );
+    const signalPulse = Animated.loop(
+      Animated.sequence([
+        Animated.timing(signal, {
+          toValue: 1,
+          duration: 1200,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: Platform.OS !== "web",
+        }),
+        Animated.timing(signal, {
+          toValue: 0.35,
+          duration: 1200,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: Platform.OS !== "web",
+        }),
+      ]),
+    );
     breathing.start();
     scanning.start();
+    signalPulse.start();
     return () => {
       breathing.stop();
       scanning.stop();
+      signalPulse.stop();
     };
-  }, [pulse, scan]);
+  }, [pulse, scan, signal]);
 
   return (
     <Screen>
       <View style={styles.top}>
         <BrandMark />
-        <Text style={styles.status}>SECURE AUDIO ANALYSIS</Text>
+        <View style={styles.statusRow}>
+          <Animated.View style={[styles.liveDot, { opacity: signal }]} />
+          <Text style={styles.status}>SECURE AUDIO ANALYSIS</Text>
+        </View>
       </View>
       <View style={styles.hero}>
         <View style={styles.orbitStage}>
@@ -95,6 +117,10 @@ export default function HomeScreen() {
                 </View>
               </View>
             </View>
+          </View>
+          <View style={styles.orbitLabel}>
+            <Animated.View style={[styles.liveDot, { opacity: signal }]} />
+            <Text style={styles.orbitLabelText}>SIGNAL LOCKED</Text>
           </View>
         </View>
         <Text style={styles.kicker}>WELCOME TO VOICESHIELD</Text>
@@ -144,6 +170,13 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     letterSpacing: 1.2,
   },
+  statusRow: { flexDirection: "row", alignItems: "center", gap: 6 },
+  liveDot: {
+    width: 5,
+    height: 5,
+    borderRadius: 3,
+    backgroundColor: Colors.cyan,
+  },
   hero: {
     flex: 1,
     justifyContent: "center",
@@ -156,6 +189,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 30,
+  },
+  orbitLabel: {
+    position: "absolute",
+    bottom: -2,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    backgroundColor: Colors.ink,
+    paddingHorizontal: 10,
+  },
+  orbitLabelText: {
+    color: Colors.muted,
+    fontSize: 9,
+    fontWeight: "800",
+    letterSpacing: 1.1,
   },
   orbit: {
     width: 180,
