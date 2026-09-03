@@ -98,10 +98,12 @@ export default function HomeScreen() {
           </View>
         </View>
         <Text style={styles.kicker}>WELCOME TO VOICESHIELD</Text>
-        <Text style={styles.title}>
-          Hear the signal.{"\n"}
-          <Text style={styles.titleAccent}>Trust the voice.</Text>
-        </Text>
+        <View style={styles.titleBlock}>
+          <Text style={styles.title}>Hear the signal.</Text>
+          <Text style={[styles.title, styles.titleAccent]}>
+            Trust the voice.
+          </Text>
+        </View>
         <Text style={styles.copy}>
           Detect AI-generated and manipulated voices before they deceive you.
         </Text>
@@ -223,6 +225,7 @@ const styles = StyleSheet.create({
     lineHeight: 43,
     fontWeight: "800",
   },
+  titleBlock: { alignItems: "center", gap: 0 },
   titleAccent: { color: Colors.blue },
   copy: {
     color: Colors.muted,
