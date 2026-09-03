@@ -38,7 +38,7 @@ export default function Login() {
   };
 
   return (
-    <Screen scroll={false}>
+    <Screen>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={styles.container}

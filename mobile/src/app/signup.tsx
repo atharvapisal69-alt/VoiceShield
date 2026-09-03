@@ -39,7 +39,7 @@ export default function Signup() {
     }
   };
   return (
-    <Screen scroll={false}>
+    <Screen>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={styles.container}

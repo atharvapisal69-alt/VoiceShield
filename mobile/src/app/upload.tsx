@@ -22,7 +22,7 @@ export default function Upload() {
     }
   };
   return (
-    <Screen scroll={false}>
+    <Screen>
       <Text style={styles.back} onPress={() => router.back()}>
         Back
       </Text>

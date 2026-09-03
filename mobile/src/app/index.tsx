@@ -52,7 +52,7 @@ export default function HomeScreen() {
   }, [pulse, scan]);
 
   return (
-    <Screen scroll={false}>
+    <Screen>
       <View style={styles.top}>
         <BrandMark />
         <Text style={styles.status}>SECURE AUDIO ANALYSIS</Text>

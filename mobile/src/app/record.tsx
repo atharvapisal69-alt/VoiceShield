@@ -44,7 +44,7 @@ export default function Record() {
   };
   const seconds = Math.floor((state.durationMillis ?? 0) / 1000);
   return (
-    <Screen scroll={false}>
+    <Screen>
       <Text style={styles.back} onPress={() => router.back()}>
         Back
       </Text>
