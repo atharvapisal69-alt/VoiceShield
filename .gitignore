@@ -59,3 +59,18 @@ ml/AntiDeepfake/
 # Personal/local test audio
 samples/*.ogg
 samples/shruti_48khz.wav
+
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Backup files
+*_backup.py
+
+# External repositories
+ml/AntiDeepfake/
+
+# Personal/test audio
+samples/*.ogg
+samples/*.wav
