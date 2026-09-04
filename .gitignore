@@ -49,3 +49,13 @@ Thumbs.db
 
 # Logs
 *.log
+
+# External research repository
+ml/AntiDeepfake/
+
+# Temporary backup files
+*_backup.py
+
+# Personal/local test audio
+samples/*.ogg
+samples/shruti_48khz.wav
