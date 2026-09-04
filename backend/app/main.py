@@ -1,4 +1,5 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pathlib import Path
 import shutil
 import uuid
@@ -9,7 +10,16 @@ from app.services.detection_service import detection_service
 app = FastAPI(
     title="VoiceShield API",
     description="AI-assisted voice scam risk analysis API",
-    version="0.1.0",
+    version="0.2.0",
+)
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 

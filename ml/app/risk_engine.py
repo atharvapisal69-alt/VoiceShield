@@ -1,86 +1,66 @@
-from __future__ import annotations
-
-from dataclasses import dataclass
-from typing import Any
-
-
-@dataclass
-class RiskResult:
-    label: str
-    risk_score: float
-    confidence: float
-    explanation: str
-
-
 class VoiceShieldRiskEngine:
     """
-    Converts the ML model's probabilities into a meaningful
-    VoiceShield risk assessment.
+    Converts raw anti-deepfake model predictions into
+    meaningful VoiceShield risk analysis results.
 
-    Model:
-        probability[0] = REAL
-        probability[1] = FAKE / SYNTHETIC
+    Verified class mapping from the original AntiDeepfake project:
+        Class 0 = Fake / Spoofed audio
+        Class 1 = Real / Genuine audio
     """
 
-    def __init__(
-        self,
-        low_threshold: float = 0.30,
-        high_threshold: float = 0.70,
-    ):
-        self.low_threshold = low_threshold
-        self.high_threshold = high_threshold
+    FAKE_INDEX = 0
+    REAL_INDEX = 1
 
-    def analyze(self, prediction: dict[str, Any]) -> RiskResult:
+    def analyze_prediction(self, prediction: dict) -> dict:
         probabilities = prediction.get("probabilities")
 
-        if not probabilities or len(probabilities) != 2:
+        if probabilities is None or len(probabilities) != 2:
             raise ValueError(
-                "Expected exactly two probabilities: "
-                "[real_probability, fake_probability]"
+                "Expected prediction probabilities with exactly 2 classes."
             )
 
-        real_probability = float(probabilities[0])
-        fake_probability = float(probabilities[1])
+        fake_probability = float(probabilities[self.FAKE_INDEX])
+        real_probability = float(probabilities[self.REAL_INDEX])
 
-        # Fake probability becomes our risk score.
-        risk_score = fake_probability
+        # Risk score represents probability of fake/manipulated audio.
+        risk_score = fake_probability * 100
 
-        if risk_score < self.low_threshold:
+        # Confidence represents confidence in the predicted class.
+        confidence = max(fake_probability, real_probability) * 100
+
+        if fake_probability >= 0.80:
+            label = "HIGH RISK"
+            explanation = (
+                "The audio shows strong characteristics associated with "
+                "synthetic or manipulated speech."
+            )
+
+        elif fake_probability >= 0.50:
+            label = "MEDIUM RISK"
+            explanation = (
+                "The audio contains suspicious characteristics and should "
+                "be verified before being trusted."
+            )
+
+        elif fake_probability >= 0.20:
+            label = "LOW-MEDIUM RISK"
+            explanation = (
+                "Some unusual characteristics were detected, but the audio "
+                "is more likely to be genuine."
+            )
+
+        else:
             label = "LOW RISK"
             explanation = (
                 "The audio is likely to be genuine based on the "
                 "anti-deepfake model prediction."
             )
 
-        elif risk_score < self.high_threshold:
-            label = "MEDIUM RISK"
-            explanation = (
-                "The audio contains signals that may indicate "
-                "synthetic or manipulated speech."
-            )
-
-        else:
-            label = "HIGH RISK"
-            explanation = (
-                "The audio shows strong signals associated with "
-                "synthetic or manipulated speech."
-            )
-
-        confidence = max(real_probability, fake_probability)
-
-        return RiskResult(
-            label=label,
-            risk_score=round(risk_score, 4),
-            confidence=round(confidence, 4),
-            explanation=explanation,
-        )
-
-    def analyze_prediction(self, prediction: dict[str, Any]) -> dict[str, Any]:
-        result = self.analyze(prediction)
-
         return {
-            "label": result.label,
-            "risk_score": result.risk_score,
-            "confidence": result.confidence,
-            "explanation": result.explanation,
+            "label": label,
+            "risk_score": round(risk_score, 2),
+            "confidence": round(confidence, 2),
+            "fake_probability": round(fake_probability * 100, 2),
+            "real_probability": round(real_probability * 100, 2),
+            "explanation": explanation,
         }
