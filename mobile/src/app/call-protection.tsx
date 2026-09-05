@@ -1,9 +1,10 @@
-import { useMemo } from "react";
 import { router } from "expo-router";
+import { useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { CallProtectionCard } from "@/components/CallProtectionCard";
 import { Header } from "@/components/Header";
+import { Icon } from "@/components/Icon";
 import { BackButton, Button, Card, Screen } from "@/components/shared";
 import { Colors, Spacing } from "@/constants/colors";
 import { useCallProtection } from "@/context/CallProtectionContext";
@@ -17,8 +18,13 @@ import { getCallAudioSupport } from "@/services/permissions";
  * same analysis pipeline) plus record/upload fallbacks.
  */
 export default function CallProtectionScreen() {
-  const { enabled, activeCall, enableProtection, disableProtection, startCall } =
-    useCallProtection();
+  const {
+    enabled,
+    activeCall,
+    enableProtection,
+    disableProtection,
+    startCall,
+  } = useCallProtection();
   const support = useMemo(() => getCallAudioSupport(), []);
 
   const onToggle = () => {
@@ -34,10 +40,7 @@ export default function CallProtectionScreen() {
   return (
     <Screen>
       <BackButton />
-      <Header
-        title="Call Protection"
-        status="🟢 Protection Ready"
-      />
+      <Header title="Call Protection" status="Protection Ready" />
       <Text style={styles.copy}>
         VoiceShield can analyze supported call audio and warn you when
         potentially suspicious voice characteristics are detected.
@@ -55,7 +58,14 @@ export default function CallProtectionScreen() {
 
       {!support.supported ? (
         <Card style={styles.cardGap} accent={Colors.mediumRisk}>
-          <Text style={styles.warningTitle}>⚠️ {support.reason}</Text>
+          <View style={styles.warningHeading}>
+            <Icon
+              name="triangleExclamation"
+              size={16}
+              color={Colors.mediumRisk}
+            />
+            <Text style={styles.warningTitle}>{support.reason}</Text>
+          </View>
           <Text style={styles.warningCopy}>
             This device cannot safely capture live cellular call audio.
             VoiceShield never bypasses operating-system restrictions. Use the
@@ -64,7 +74,7 @@ export default function CallProtectionScreen() {
           <View style={styles.fallbackRow}>
             <Button
               label="Record Voice"
-              icon="🎙️"
+              icon="microphone"
               variant="secondary"
               compact
               style={styles.fallbackButton}
@@ -72,7 +82,7 @@ export default function CallProtectionScreen() {
             />
             <Button
               label="Upload Audio"
-              icon="📁"
+              icon="folderOpen"
               variant="secondary"
               compact
               style={styles.fallbackButton}
@@ -91,7 +101,7 @@ export default function CallProtectionScreen() {
           "Risk scores are probabilistic — never a definite scammer claim.",
         ].map((item) => (
           <View key={item} style={styles.privacyRow}>
-            <Text style={styles.privacyCheck}>✓</Text>
+            <Icon name="check" size={13} color={Colors.success} />
             <Text style={styles.privacyCopy}>{item}</Text>
           </View>
         ))}
@@ -108,6 +118,7 @@ const styles = StyleSheet.create({
     marginTop: Spacing.sm,
   },
   cardGap: { marginTop: Spacing.lg },
+  warningHeading: { flexDirection: "row", alignItems: "center", gap: 8 },
   warningTitle: { color: Colors.mediumRisk, fontSize: 14, fontWeight: "900" },
   warningCopy: {
     color: Colors.textMuted,
@@ -128,7 +139,6 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.sm,
   },
   privacyRow: { flexDirection: "row", gap: 10, marginBottom: 8 },
-  privacyCheck: { color: Colors.success, fontSize: 13, fontWeight: "900" },
   privacyCopy: {
     color: Colors.textMuted,
     fontSize: 13,

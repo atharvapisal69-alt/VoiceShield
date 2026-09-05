@@ -1,7 +1,15 @@
 import { useEffect, useState } from "react";
-import { Animated, Easing, Platform, StyleSheet, Text, View } from "react-native";
+import {
+    Animated,
+    Easing,
+    Platform,
+    StyleSheet,
+    Text,
+    View,
+} from "react-native";
 import Svg, { Circle } from "react-native-svg";
 
+import { Icon } from "@/components/Icon";
 import { Colors, riskColor, riskLevelForScore } from "@/constants/colors";
 
 /**
@@ -37,7 +45,10 @@ export function RiskMeter({
     }).start();
   }, [clamped, pulse]);
 
-  const scale = pulse.interpolate({ inputRange: [0, 1], outputRange: [0.9, 1] });
+  const scale = pulse.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.9, 1],
+  });
 
   return (
     <View style={[styles.wrap, { width: size, height: size }]}>
@@ -67,7 +78,7 @@ export function RiskMeter({
         style={[styles.center, { transform: [{ scale }] }]}
         pointerEvents="none"
       >
-        <Text style={styles.shield}>🛡️</Text>
+        <Icon name="shieldHalved" size={26} color={color} />
         <Text style={[styles.score, { color }]}>{clamped.toFixed(1)}%</Text>
         <Text style={[styles.label, { color }]}>{showLabel ? level : " "}</Text>
       </Animated.View>

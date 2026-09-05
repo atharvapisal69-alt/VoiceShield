@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="shield" x1="80" y1="60" x2="430" y2="450" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#22D3EE"/>
+      <stop offset="0.55" stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#6366F1"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="#020617"/>
+  <path d="M256 48 423 112v126c0 111-71 184-167 226-96-42-167-115-167-226V112L256 48Z" fill="#0F172A" stroke="url(#shield)" stroke-width="22" stroke-linejoin="round"/>
+  <path d="M164 281c-25-36-15-84 20-111 24-19 54-27 81-25-29 23-35 57-17 85 22 35 11 84-24 104-23 13-47-1-60-22Z" fill="#2563EB55" stroke="#22D3EE" stroke-width="10" stroke-linejoin="round"/>
+  <g stroke="#22D3EE" stroke-width="12" stroke-linecap="round">
+    <path d="M198 282v-25"/><path d="M224 298v-57"/><path d="M250 314v-90"/><path d="M276 298v-58"/><path d="M302 282v-25"/>
+  </g>
+  <rect x="333" y="112" width="82" height="58" rx="16" fill="#020617" stroke="#22D3EE" stroke-width="7"/>
+  <text x="374" y="153" fill="#22D3EE" font-family="Arial, sans-serif" font-size="34" font-weight="700" text-anchor="middle">AI</text>
+</svg>

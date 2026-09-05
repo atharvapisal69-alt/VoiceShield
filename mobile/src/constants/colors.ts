@@ -7,6 +7,8 @@ export const Colors = {
   primary: "#2563EB",
   primaryDark: "#1D4ED8",
   primaryGlow: "rgba(37, 99, 235, 0.35)",
+  cyan: "#22D3EE",
+  indigo: "#6366F1",
 
   dark: "#0F172A",
   card: "#1E293B",
@@ -64,8 +66,7 @@ export function riskLevelForScore(score: number): RiskLevel {
 
 /** Returns the theme color for a score or risk level. */
 export function riskColor(score: number | RiskLevel): string {
-  const level =
-    typeof score === "string" ? score : riskLevelForScore(score);
+  const level = typeof score === "string" ? score : riskLevelForScore(score);
   if (level === "HIGH RISK") return Colors.highRisk;
   if (level === "MEDIUM RISK") return Colors.mediumRisk;
   return Colors.lowRisk;

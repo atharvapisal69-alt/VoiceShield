@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
+import { Icon } from "@/components/Icon";
 import { Colors, Radius, Spacing } from "@/constants/colors";
 
 /**
@@ -37,7 +38,7 @@ export function CallProtectionCard({
     <View style={styles.card}>
       <View style={styles.topRow}>
         <View style={styles.icon}>
-          <Text style={styles.iconEmoji}>📞</Text>
+          <Icon name="phone" size={20} color={Colors.primary} />
         </View>
         <View style={{ flex: 1 }}>
           <Text style={styles.title}>Call Protection</Text>
@@ -65,17 +66,17 @@ export function CallProtectionCard({
           </Text>
         </Pressable>
       ) : demoMode && onStartDemo ? (
-          <Pressable
-            accessibilityRole="button"
-            onPress={onStartDemo}
-            style={({ pressed }) => [
-              styles.demoButton,
-              pressed && styles.pressed,
-            ]}
-          >
-            <Text style={styles.demoIcon}>🎬</Text>
-            <Text style={styles.demoLabel}>Start Demo Call</Text>
-          </Pressable>
+        <Pressable
+          accessibilityRole="button"
+          onPress={onStartDemo}
+          style={({ pressed }) => [
+            styles.demoButton,
+            pressed && styles.pressed,
+          ]}
+        >
+          <Icon name="video" size={16} color={Colors.white} />
+          <Text style={styles.demoLabel}>Start Demo Call</Text>
+        </Pressable>
       ) : (
         <Pressable
           accessibilityRole="button"

@@ -1,7 +1,8 @@
+import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 
+import { Icon } from "@/components/Icon";
 import { formatDuration } from "@/components/shared";
 import { Colors, Radius, Spacing } from "@/constants/colors";
 
@@ -39,7 +40,10 @@ export function AudioPlayer({ uri }: { uri: string }) {
 
   const seek = (event: { nativeEvent: { locationX: number } }) => {
     if (!trackWidth || !duration) return;
-    const ratio = Math.max(0, Math.min(1, event.nativeEvent.locationX / trackWidth));
+    const ratio = Math.max(
+      0,
+      Math.min(1, event.nativeEvent.locationX / trackWidth),
+    );
     void player.seekTo(ratio * duration);
   };
 
@@ -55,9 +59,11 @@ export function AudioPlayer({ uri }: { uri: string }) {
             pressed && { transform: [{ scale: 0.92 }] },
           ]}
         >
-          <Text style={styles.playIcon}>
-            {status.playing ? "⏸" : "▶"}
-          </Text>
+          <Icon
+            name={status.playing ? "pause" : "play"}
+            size={18}
+            color={Colors.white}
+          />
         </Pressable>
 
         <Pressable
@@ -66,24 +72,20 @@ export function AudioPlayer({ uri }: { uri: string }) {
           onPress={seek}
         >
           <View style={styles.trackBg} />
-          <View
-            style={[styles.trackFill, { width: `${progress * 100}%` }]}
-          />
-          <View
-            style={[
-              styles.thumb,
-              { left: `${progress * 100}%` },
-            ]}
-          />
+          <View style={[styles.trackFill, { width: `${progress * 100}%` }]} />
+          <View style={[styles.thumb, { left: `${progress * 100}%` }]} />
         </Pressable>
 
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Stop"
           onPress={stop}
-          style={({ pressed }) => [styles.stopButton, pressed && { opacity: 0.6 }]}
+          style={({ pressed }) => [
+            styles.stopButton,
+            pressed && { opacity: 0.6 },
+          ]}
         >
-          <Text style={styles.stopIcon}>⏹</Text>
+          <Icon name="stop" size={16} color={Colors.text} />
         </Pressable>
       </View>
 

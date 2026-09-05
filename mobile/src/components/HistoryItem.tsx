@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { RiskBadge, formatDateTime, formatDuration } from "@/components/shared";
+import { Icon, type IconName } from "@/components/Icon";
 import { Colors, Radius, Spacing, riskColor } from "@/constants/colors";
 import type { HistoryItem as HistoryEntry } from "@/types/call";
 
@@ -17,13 +18,15 @@ export function HistoryItem({
   onDelete?: () => void;
 }) {
   const isCall = item.kind === "call";
-  const icon = isCall ? "📞" : item.source === "recording" ? "🎙️" : "🎵";
+  const icon: IconName = isCall
+    ? "phone"
+    : item.source === "recording"
+      ? "microphone"
+      : "fileAudio";
   const title = isCall ? "VoiceShield Call Report" : item.fileName;
   const score = isCall ? item.riskScore : item.riskScore;
   const badgeLevel =
-    item.kind === "analysis"
-      ? item.label
-      : riskLevelFromScore(item.riskScore);
+    item.kind === "analysis" ? item.label : riskLevelFromScore(item.riskScore);
 
   return (
     <Pressable
@@ -32,7 +35,7 @@ export function HistoryItem({
       style={({ pressed }) => [styles.row, pressed && styles.pressed]}
     >
       <View style={[styles.icon, { borderColor: riskColor(score) }]}>
-        <Text style={styles.iconEmoji}>{icon}</Text>
+        <Icon name={icon} size={20} color={riskColor(score)} />
       </View>
 
       <View style={styles.body}>
@@ -57,14 +60,16 @@ export function HistoryItem({
           hitSlop={12}
           style={({ pressed }) => [styles.delete, pressed && { opacity: 0.5 }]}
         >
-          <Text style={styles.deleteText}>🗑</Text>
+          <Icon name="trash" size={15} color={Colors.highRisk} />
         </Pressable>
       ) : null}
     </Pressable>
   );
 }
 
-function riskLevelFromScore(score: number): "LOW RISK" | "MEDIUM RISK" | "HIGH RISK" {
+function riskLevelFromScore(
+  score: number,
+): "LOW RISK" | "MEDIUM RISK" | "HIGH RISK" {
   if (score >= 80) return "HIGH RISK";
   if (score >= 50) return "MEDIUM RISK";
   return "LOW RISK";

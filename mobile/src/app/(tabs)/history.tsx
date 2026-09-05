@@ -1,10 +1,11 @@
+import { router } from "expo-router";
 import { useState } from "react";
 import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
-import { router } from "expo-router";
 
 import { EmptyState } from "@/components/EmptyState";
 import { Header } from "@/components/Header";
 import { HistoryItem } from "@/components/HistoryItem";
+import { Icon, type IconName } from "@/components/Icon";
 import { Button, Screen } from "@/components/shared";
 import { Colors, Radius, Spacing } from "@/constants/colors";
 import { useAnalysis } from "@/context/AnalysisContext";
@@ -33,7 +34,10 @@ export default function HistoryTab() {
 
   const openItem = (item: HistoryItemType) => {
     if (item.kind === "call") {
-      router.push({ pathname: "/call-report", params: { id: item.id } } as never);
+      router.push({
+        pathname: "/call-report",
+        params: { id: item.id },
+      } as never);
     } else {
       router.push({ pathname: "/result", params: { id: item.id } } as never);
     }
@@ -48,12 +52,14 @@ export default function HistoryTab() {
 
       <View style={styles.segment}>
         <SegmentButton
-          label="🎙️ Voice Analyses"
+          icon="microphone"
+          label="Voice Analyses"
           active={segment === "analyses"}
           onPress={() => setSegment("analyses")}
         />
         <SegmentButton
-          label="📞 Call Reports"
+          icon="phone"
+          label="Call Reports"
           active={segment === "calls"}
           onPress={() => setSegment("calls")}
         />
@@ -61,10 +67,8 @@ export default function HistoryTab() {
 
       {visible.length === 0 ? (
         <EmptyState
-          icon={segment === "calls" ? "📞" : "🎵"}
-          title={
-            segment === "calls" ? "No call reports" : "No voice analyses"
-          }
+          icon={segment === "calls" ? "phone" : "fileAudio"}
+          title={segment === "calls" ? "No call reports" : "No voice analyses"}
           subtitle={
             segment === "calls"
               ? "Completed call protection sessions will appear here."
@@ -88,7 +92,7 @@ export default function HistoryTab() {
           <Button
             label="Clear All History"
             variant="danger"
-            icon="🗑"
+            icon="trash"
             onPress={confirmClearAll}
             style={styles.clearButton}
           />
@@ -100,10 +104,12 @@ export default function HistoryTab() {
 
 function SegmentButton({
   label,
+  icon,
   active,
   onPress,
 }: {
   label: string;
+  icon: IconName;
   active: boolean;
   onPress: () => void;
 }) {
@@ -114,6 +120,11 @@ function SegmentButton({
       onPress={onPress}
       style={[styles.segmentButton, active && styles.segmentActive]}
     >
+      <Icon
+        name={icon}
+        size={14}
+        color={active ? Colors.white : Colors.textMuted}
+      />
       <Text style={[styles.segmentLabel, active && styles.segmentLabelActive]}>
         {label}
       </Text>

@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { AnalysisLoading } from "@/components/AnalysisLoading";
+import { Icon } from "@/components/Icon";
 import { BackButton, Button, Screen } from "@/components/shared";
 import { Colors, Spacing } from "@/constants/colors";
 import { useAudioAnalysis } from "@/hooks/useAudioAnalysis";
@@ -28,8 +29,7 @@ export default function AnalyzeScreen() {
     const source: AnalysisSource =
       params.source === "recording" ? "recording" : "upload";
     const rawDuration = Number(params.duration);
-    const hasDuration =
-      Number.isFinite(rawDuration) && rawDuration > 0;
+    const hasDuration = Number.isFinite(rawDuration) && rawDuration > 0;
 
     void run({
       file: {
@@ -47,7 +47,15 @@ export default function AnalyzeScreen() {
         } as never);
       }
     });
-  }, [run, params.uri, params.name, params.mimeType, params.source, params.duration, attempt]);
+  }, [
+    run,
+    params.uri,
+    params.name,
+    params.mimeType,
+    params.source,
+    params.duration,
+    attempt,
+  ]);
 
   if (!params.uri) {
     return (
@@ -68,7 +76,7 @@ export default function AnalyzeScreen() {
       <BackButton />
       {state === "error" ? (
         <View style={styles.center}>
-          <Text style={styles.errorEmoji}>😕</Text>
+          <Icon name="faceFrown" size={40} color={Colors.textMuted} />
           <Text style={styles.errorTitle}>Analysis failed</Text>
           <Text style={styles.errorCopy}>{error}</Text>
           <Button
@@ -85,9 +93,18 @@ export default function AnalyzeScreen() {
 }
 
 const styles = StyleSheet.create({
-  center: { alignItems: "center", paddingVertical: Spacing.xxl, gap: Spacing.sm },
+  center: {
+    alignItems: "center",
+    paddingVertical: Spacing.xxl,
+    gap: Spacing.sm,
+  },
   errorEmoji: { fontSize: 40 },
-  errorTitle: { color: Colors.text, fontSize: 20, fontWeight: "900", marginTop: Spacing.sm },
+  errorTitle: {
+    color: Colors.text,
+    fontSize: 20,
+    fontWeight: "900",
+    marginTop: Spacing.sm,
+  },
   errorCopy: {
     color: Colors.textMuted,
     fontSize: 14,

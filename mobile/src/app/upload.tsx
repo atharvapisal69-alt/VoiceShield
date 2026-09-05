@@ -1,19 +1,29 @@
-import { useState } from "react";
-import { router } from "expo-router";
-import { StyleSheet, Text, View } from "react-native";
 import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
+import { router } from "expo-router";
+import { useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
 
 import { AudioPlayer } from "@/components/AudioPlayer";
 import { AudioUploadCard } from "@/components/AudioUploadCard";
 import { Header } from "@/components/Header";
-import { BackButton, Button, Card, Screen, formatBytes, formatDuration } from "@/components/shared";
+import { Icon } from "@/components/Icon";
+import {
+    BackButton,
+    Button,
+    Card,
+    Screen,
+    formatBytes,
+    formatDuration,
+} from "@/components/shared";
 import { Colors, Spacing } from "@/constants/colors";
 import { pickAudioFile } from "@/services/audioPicker";
 import type { AudioFile } from "@/types/analysis";
 
 export default function UploadScreen() {
   const [file, setFile] = useState<AudioFile | null>(null);
-  const player = useAudioPlayer(file ? file.uri : null, { updateInterval: 100 });
+  const player = useAudioPlayer(file ? file.uri : null, {
+    updateInterval: 100,
+  });
   const status = useAudioPlayerStatus(player);
 
   const choose = async () => {
@@ -53,7 +63,7 @@ export default function UploadScreen() {
       ) : (
         <Card style={styles.selected}>
           <View style={styles.fileIcon}>
-            <Text style={styles.fileEmoji}>🎵</Text>
+            <Icon name="fileAudio" size={26} color={Colors.primary} />
           </View>
           <Text style={styles.fileName} numberOfLines={1}>
             {file.name}
@@ -76,13 +86,13 @@ export default function UploadScreen() {
           <Button
             label="Delete"
             variant="secondary"
-            icon="🗑"
+            icon="trash"
             onPress={() => setFile(null)}
             style={styles.stretchButton}
           />
           <Button
             label="Analyze Audio"
-            icon="🛡️"
+            icon="shieldHalved"
             onPress={analyze}
             style={styles.stretchButton}
           />
@@ -113,9 +123,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   fileEmoji: { fontSize: 26 },
-  fileName: { color: Colors.text, fontSize: 17, fontWeight: "900", marginTop: Spacing.sm },
+  fileName: {
+    color: Colors.text,
+    fontSize: 17,
+    fontWeight: "900",
+    marginTop: Spacing.sm,
+  },
   metaRow: { flexDirection: "row", gap: Spacing.md, marginTop: Spacing.sm },
   metaLabel: { color: Colors.textMuted, fontSize: 11, fontWeight: "700" },
-  metaValue: { color: Colors.text, fontSize: 14, fontWeight: "800", marginTop: 3 },
+  metaValue: {
+    color: Colors.text,
+    fontSize: 14,
+    fontWeight: "800",
+    marginTop: 3,
+  },
   stretchButton: { alignSelf: "stretch", marginTop: Spacing.sm },
 });

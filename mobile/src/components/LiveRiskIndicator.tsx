@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
-import { Animated, Easing, Platform, StyleSheet, Text, View } from "react-native";
+import {
+    Animated,
+    Easing,
+    Platform,
+    StyleSheet,
+    Text,
+    View,
+} from "react-native";
 
+import { Icon } from "@/components/Icon";
 import { Colors, Radius, Spacing, riskColor } from "@/constants/colors";
 import type { RiskLevel } from "@/types/analysis";
 
@@ -39,14 +47,16 @@ export function LiveRiskIndicator({
     <View style={styles.card}>
       <View style={styles.header}>
         <View style={styles.analysisRow}>
-          <Text style={styles.analysisIcon}>🎧</Text>
+          <Icon name="headphones" size={22} color={Colors.primary} />
           <View>
             <Text style={styles.analysisTitle}>Voice Analysis</Text>
             <View style={styles.activeRow}>
               <View
                 style={[
                   styles.liveDot,
-                  { backgroundColor: active ? Colors.success : Colors.textMuted },
+                  {
+                    backgroundColor: active ? Colors.success : Colors.textMuted,
+                  },
                 ]}
               />
               <Text
@@ -66,7 +76,9 @@ export function LiveRiskIndicator({
       </View>
 
       <View style={styles.track}>
-        <Animated.View style={[styles.fill, { width, backgroundColor: color }]} />
+        <Animated.View
+          style={[styles.fill, { width, backgroundColor: color }]}
+        />
       </View>
 
       <View style={styles.footer}>
@@ -96,7 +108,12 @@ const styles = StyleSheet.create({
   analysisRow: { flexDirection: "row", alignItems: "center", gap: 12 },
   analysisIcon: { fontSize: 22 },
   analysisTitle: { color: Colors.text, fontSize: 15, fontWeight: "900" },
-  activeRow: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: 3 },
+  activeRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginTop: 3,
+  },
   liveDot: { width: 7, height: 7, borderRadius: 4 },
   activeText: { fontSize: 11, fontWeight: "800" },
   score: { fontSize: 30, fontWeight: "900", fontVariant: ["tabular-nums"] },

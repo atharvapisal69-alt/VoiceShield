@@ -1,11 +1,13 @@
 import { router } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
+import { AnimatedVoiceShieldLogo } from "@/components/AnimatedVoiceShieldLogo";
 import { CallProtectionCard } from "@/components/CallProtectionCard";
+import { EmptyState } from "@/components/EmptyState";
 import { Header } from "@/components/Header";
 import { HistoryItem } from "@/components/HistoryItem";
-import { EmptyState } from "@/components/EmptyState";
-import { Card, SectionHeader, Screen } from "@/components/shared";
+import { Icon, type IconName } from "@/components/Icon";
+import { Button, Card, Screen, SectionHeader } from "@/components/shared";
 import { Colors, Radius, Spacing } from "@/constants/colors";
 import { useAnalysis } from "@/context/AnalysisContext";
 import { useCallProtection } from "@/context/CallProtectionContext";
@@ -18,7 +20,10 @@ export default function HomeScreen() {
 
   const openHistoryItem = (item: HistoryItemType) => {
     if (item.kind === "call") {
-      router.push({ pathname: "/call-report", params: { id: item.id } } as never);
+      router.push({
+        pathname: "/call-report",
+        params: { id: item.id },
+      } as never);
     } else {
       router.push({ pathname: "/result", params: { id: item.id } } as never);
     }
@@ -30,29 +35,33 @@ export default function HomeScreen() {
 
       <Card style={styles.mainCard}>
         <View style={styles.cardHeader}>
-          <View style={styles.cardIcon}>
-            <Text style={styles.cardIconEmoji}>🛡️</Text>
-          </View>
+          <AnimatedVoiceShieldLogo size={84} autoPlay showWordmark={false} />
           <Text style={styles.cardTitle}>Analyze a Voice</Text>
           <Text style={styles.cardCopy}>
             Choose how you want VoiceShield to analyze a voice.
           </Text>
+          <Button
+            label="Getting Started"
+            icon="arrowRight"
+            onPress={() => router.push("/record" as never)}
+            style={styles.gettingStarted}
+          />
         </View>
 
         <ActionRow
-          emoji="📞"
+          icon="phone"
           title="Protect Call"
           hint="Monitor supported calls for suspicious voice characteristics."
           onPress={() => router.push("/call-protection" as never)}
         />
         <ActionRow
-          emoji="🎙️"
+          icon="microphone"
           title="Record Voice"
           hint="Record a voice sample for analysis."
           onPress={() => router.push("/record" as never)}
         />
         <ActionRow
-          emoji="📁"
+          icon="folderOpen"
           title="Upload Audio"
           hint="Analyze an existing audio recording."
           onPress={() => router.push("/upload" as never)}
@@ -64,7 +73,9 @@ export default function HomeScreen() {
           enabled={enabled}
           active={Boolean(activeCall)}
           manage={{
-            label: enabled ? "Manage Call Protection" : "Enable Call Protection",
+            label: enabled
+              ? "Manage Call Protection"
+              : "Enable Call Protection",
             onPress: () => router.push("/call-protection" as never),
           }}
           onToggle={() => router.push("/call-protection" as never)}
@@ -83,7 +94,7 @@ export default function HomeScreen() {
 
       {recent.length === 0 ? (
         <EmptyState
-          icon="🔍"
+          icon="magnifyingGlass"
           title="No analyses yet"
           subtitle="Run your first voice check to see results here."
         />
@@ -101,12 +112,12 @@ export default function HomeScreen() {
 }
 
 function ActionRow({
-  emoji,
+  icon,
   title,
   hint,
   onPress,
 }: {
-  emoji: string;
+  icon: IconName;
   title: string;
   hint: string;
   onPress: () => void;
@@ -118,13 +129,13 @@ function ActionRow({
       style={({ pressed }) => [styles.action, pressed && styles.actionPressed]}
     >
       <View style={styles.actionIcon}>
-        <Text style={styles.actionEmoji}>{emoji}</Text>
+        <Icon name={icon} size={19} color={Colors.primary} />
       </View>
       <View style={{ flex: 1 }}>
         <Text style={styles.actionTitle}>{title}</Text>
         <Text style={styles.actionHint}>{hint}</Text>
       </View>
-      <Text style={styles.chevron}>›</Text>
+      <Icon name="arrowRight" size={18} color={Colors.textMuted} />
     </Pressable>
   );
 }
@@ -132,24 +143,16 @@ function ActionRow({
 const styles = StyleSheet.create({
   mainCard: { marginTop: Spacing.sm },
   cardHeader: { alignItems: "center", marginBottom: Spacing.md },
-  cardIcon: {
-    width: 54,
-    height: 54,
-    borderRadius: 18,
-    backgroundColor: `${Colors.primary}22`,
-    borderWidth: 1,
-    borderColor: Colors.primary,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: Spacing.sm,
-  },
-  cardIconEmoji: { fontSize: 24 },
   cardTitle: { color: Colors.text, fontSize: 19, fontWeight: "900" },
   cardCopy: {
     color: Colors.textMuted,
     fontSize: 13,
     marginTop: 4,
     textAlign: "center",
+  },
+  gettingStarted: {
+    alignSelf: "stretch",
+    marginTop: Spacing.md,
   },
   action: {
     flexDirection: "row",

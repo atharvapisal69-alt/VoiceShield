@@ -25,7 +25,7 @@ export function Header({
     <View style={styles.wrap}>
       {brand ? (
         <View style={styles.brandRow}>
-          <ShieldMark size={44} />
+          <ShieldMark size={54} />
           <View style={styles.brandText}>
             <Text style={styles.brandTitle}>VoiceShield</Text>
             <Text style={styles.brandSub}>

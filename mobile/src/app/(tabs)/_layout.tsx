@@ -1,6 +1,7 @@
 import { Tabs } from "expo-router";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet } from "react-native";
 
+import { Icon } from "@/components/Icon";
 import { Colors } from "@/constants/colors";
 
 export default function TabsLayout() {
@@ -19,7 +20,7 @@ export default function TabsLayout() {
         options={{
           title: "Home",
           tabBarIcon: ({ color }) => (
-            <Text style={[styles.icon, { color }]}>🏠</Text>
+            <Icon name="house" size={17} color={String(color)} />
           ),
         }}
       />
@@ -28,7 +29,7 @@ export default function TabsLayout() {
         options={{
           title: "History",
           tabBarIcon: ({ color }) => (
-            <Text style={[styles.icon, { color }]}>📚</Text>
+            <Icon name="bookOpen" size={17} color={String(color)} />
           ),
         }}
       />
@@ -37,7 +38,7 @@ export default function TabsLayout() {
         options={{
           title: "Profile",
           tabBarIcon: ({ color }) => (
-            <Text style={[styles.icon, { color }]}>👤</Text>
+            <Icon name="user" size={17} color={String(color)} />
           ),
         }}
       />
@@ -53,5 +54,4 @@ const styles = StyleSheet.create({
     elevation: 0,
   },
   tabLabel: { fontSize: 11, fontWeight: "700" },
-  icon: { fontSize: 17 },
 });

@@ -3,9 +3,17 @@ import { StyleSheet, Text, View } from "react-native";
 
 import { EmptyState } from "@/components/EmptyState";
 import { Header } from "@/components/Header";
+import { Icon } from "@/components/Icon";
 import { RiskMeter } from "@/components/RiskMeter";
 import { RiskScoreCard } from "@/components/RiskScoreCard";
-import { Button, Card, Screen, formatDateTime, formatDuration, riskColor } from "@/components/shared";
+import {
+    Button,
+    Card,
+    Screen,
+    formatDateTime,
+    formatDuration,
+    riskColor,
+} from "@/components/shared";
 import { Colors, Radius, Spacing } from "@/constants/colors";
 import { useAnalysis } from "@/context/AnalysisContext";
 
@@ -20,7 +28,7 @@ export default function ResultScreen() {
       <Screen>
         <Header title="Analysis Result" />
         <EmptyState
-          icon="🔍"
+          icon="magnifyingGlass"
           title="Result not found"
           subtitle="This analysis may have been cleared from history."
           actionLabel="Back to Home"
@@ -51,7 +59,16 @@ export default function ResultScreen() {
 
       <View style={styles.sourceChip}>
         <Text style={[styles.sourceChipText, { color: accent }]}>
-          {analysisItem.source === "recording" ? "🎙️ RECORDING" : "📁 UPLOAD"}
+          <Icon
+            name={
+              analysisItem.source === "recording" ? "microphone" : "folderOpen"
+            }
+            size={12}
+            color={accent}
+          />
+          <Text style={[styles.sourceChipText, { color: accent }]}>
+            {analysisItem.source === "recording" ? "RECORDING" : "UPLOAD"}
+          </Text>
         </Text>
       </View>
 
@@ -66,7 +83,7 @@ export default function ResultScreen() {
 
       <Button
         label="Analyze Another Voice"
-        icon="🛡️"
+        icon="shieldHalved"
         onPress={() => router.replace("/home" as never)}
         style={styles.primaryButton}
       />

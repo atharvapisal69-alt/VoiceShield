@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Colors, Radius, Spacing } from "@/constants/colors";
+import { Icon, type IconName } from "@/components/Icon";
 
 /**
  * Permission status card with an inline grant action.
@@ -13,7 +14,7 @@ export function PermissionCard({
   onRequest,
   requestLabel = "Grant Access",
 }: {
-  icon: string;
+  icon: IconName;
   title: string;
   description: string;
   granted: boolean;
@@ -24,7 +25,7 @@ export function PermissionCard({
     <View style={styles.card}>
       <View style={styles.left}>
         <View style={styles.icon}>
-          <Text style={styles.iconEmoji}>{icon}</Text>
+          <Icon name={icon} size={18} color={Colors.primary} />
         </View>
         <View style={{ flex: 1 }}>
           <Text style={styles.title}>{title}</Text>
@@ -33,7 +34,9 @@ export function PermissionCard({
             <View
               style={[
                 styles.dot,
-                { backgroundColor: granted ? Colors.success : Colors.mediumRisk },
+                {
+                  backgroundColor: granted ? Colors.success : Colors.mediumRisk,
+                },
               ]}
             />
             <Text
@@ -88,7 +91,12 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     marginTop: 3,
   },
-  statusRow: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: 7 },
+  statusRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginTop: 7,
+  },
   dot: { width: 7, height: 7, borderRadius: 4 },
   status: { fontSize: 11, fontWeight: "800" },
   button: {

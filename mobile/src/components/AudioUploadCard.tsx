@@ -1,8 +1,9 @@
 import { StyleSheet, Text, View } from "react-native";
 
+import { Icon } from "@/components/Icon";
 import { Button } from "@/components/shared";
-import { SUPPORTED_FORMATS } from "@/constants/config";
 import { Colors, Radius, Spacing } from "@/constants/colors";
+import { SUPPORTED_FORMATS } from "@/constants/config";
 
 /**
  * Upload-audio entry card shown when no file has been selected.
@@ -17,7 +18,7 @@ export function AudioUploadCard({
   return (
     <View style={styles.wrap}>
       <View style={styles.icon}>
-        <Text style={styles.iconEmoji}>📁</Text>
+        <Icon name="folderOpen" size={34} color={Colors.primary} />
       </View>
       <Text style={styles.title}>Upload Audio</Text>
       <Text style={styles.copy}>
@@ -25,7 +26,7 @@ export function AudioUploadCard({
       </Text>
       <Button
         label="Choose Audio"
-        icon="🗂️"
+        icon="folderOpen"
         onPress={onChoose}
         style={styles.button}
       />

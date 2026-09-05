@@ -2,16 +2,18 @@ import { router } from "expo-router";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import {
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  type StyleProp,
-  type ViewStyle,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    Text,
+    View,
+    type StyleProp,
+    type ViewStyle,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { AnimatedVoiceShieldLogo } from "@/components/AnimatedVoiceShieldLogo";
+import { Icon, type IconName } from "@/components/Icon";
 import { Colors, Radius, Spacing, riskColor } from "@/constants/colors";
 import type { RiskLevel } from "@/types/analysis";
 
@@ -139,7 +141,7 @@ export function Button({
   label: string;
   onPress: () => void;
   variant?: ButtonVariant;
-  icon?: string;
+  icon?: IconName;
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
   compact?: boolean;
@@ -164,8 +166,10 @@ export function Button({
         style,
       ]}
     >
-      {icon ? <Text style={styles.buttonIcon}>{icon}</Text> : null}
-      <Text style={[styles.buttonLabel, { color: palette.label }]}>{label}</Text>
+      {icon ? <Icon name={icon} size={15} color={palette.label} /> : null}
+      <Text style={[styles.buttonLabel, { color: palette.label }]}>
+        {label}
+      </Text>
     </Pressable>
   );
 }
@@ -202,18 +206,7 @@ export function RiskBadge({
 
 export function ShieldMark({ size = 46 }: { size?: number }) {
   return (
-    <View
-      style={[
-        styles.shield,
-        {
-          width: size,
-          height: size,
-          borderRadius: size * 0.34,
-        },
-      ]}
-    >
-      <Text style={{ fontSize: size * 0.52 }}>🛡️</Text>
-    </View>
+    <AnimatedVoiceShieldLogo size={size * 1.25} autoPlay showWordmark={false} />
   );
 }
 
@@ -222,13 +215,11 @@ export function BackButton({ label = "Back" }: { label?: string }) {
     <Pressable
       accessibilityRole="button"
       onPress={() =>
-        router.canGoBack()
-          ? router.back()
-          : router.replace("/home" as never)
+        router.canGoBack() ? router.back() : router.replace("/home" as never)
       }
       style={({ pressed }) => [styles.backButton, pressed && { opacity: 0.6 }]}
     >
-      <Text style={styles.backChevron}>‹</Text>
+      <Icon name="arrowLeft" size={16} color={Colors.textMuted} />
       <Text style={styles.backLabel}>{label}</Text>
     </Pressable>
   );
@@ -308,9 +299,12 @@ const styles = StyleSheet.create({
     minHeight: 52,
     borderRadius: Radius.md,
     paddingHorizontal: Spacing.lg,
+    gap: 10,
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.08)",
   },
   buttonCompact: { minHeight: 44, paddingHorizontal: Spacing.md },
   buttonPressed: { opacity: 0.82, transform: [{ scale: 0.985 }] },

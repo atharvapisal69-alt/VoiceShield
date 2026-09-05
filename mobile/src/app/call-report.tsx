@@ -1,11 +1,12 @@
-import { useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
+import { useState } from "react";
 import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
 
 import { CallReportCard } from "@/components/CallReportCard";
 import { CallTimeline } from "@/components/CallTimeline";
 import { EmptyState } from "@/components/EmptyState";
 import { Header } from "@/components/Header";
+import { Icon } from "@/components/Icon";
 import { BackButton, Button, Card, Screen } from "@/components/shared";
 import { Colors, Radius, Spacing } from "@/constants/colors";
 import { useAnalysis } from "@/context/AnalysisContext";
@@ -29,7 +30,7 @@ export default function CallReportScreen() {
       <Screen>
         <BackButton />
         <EmptyState
-          icon="📄"
+          icon="fileLines"
           title="Call report not found"
           subtitle="This report may have been cleared from history."
           actionLabel="Back to Home"
@@ -47,7 +48,11 @@ export default function CallReportScreen() {
     setSubmitting(true);
     setSubmitError("");
     try {
-      await reportCall({ callId: callItem.id, category, notes: notes.trim() || undefined });
+      await reportCall({
+        callId: callItem.id,
+        category,
+        notes: notes.trim() || undefined,
+      });
       setSubmitted(true);
     } catch {
       setSubmitError("Report could not be submitted. Please try again.");
@@ -77,7 +82,10 @@ export default function CallReportScreen() {
 
       <Text style={styles.sectionLabel}>REPORT THIS CALL</Text>
       <Card>
-        <Text style={styles.reportTitle}>🚩 Report a suspicious call</Text>
+        <View style={styles.reportTitleRow}>
+          <Icon name="flag" size={16} color={Colors.highRisk} />
+          <Text style={styles.reportTitle}>Report a suspicious call</Text>
+        </View>
         <Text style={styles.reportCopy}>
           Reports are never sent automatically — they are submitted only when
           you press the button below.
@@ -100,7 +108,7 @@ export default function CallReportScreen() {
                   },
                 ]}
               >
-                {selected ? "✓ " : ""}
+                {selected ? "" : ""}
                 {option}
               </Text>
             );
@@ -121,13 +129,14 @@ export default function CallReportScreen() {
 
         {submitted ? (
           <View style={styles.success}>
-            <Text style={styles.successText}>✓ Report submitted. Thank you.</Text>
+            <Icon name="check" size={14} color={Colors.success} />
+            <Text style={styles.successText}>Report submitted. Thank you.</Text>
           </View>
         ) : (
           <Button
             label={submitting ? "Submitting…" : "Submit Report"}
             variant="danger"
-            icon="🚩"
+            icon="flag"
             onPress={() => void submit()}
             disabled={submitting}
             style={styles.submitButton}
@@ -152,19 +161,49 @@ function MetricsCard(props: {
   realProbability: number;
   explanation: string;
 }) {
-  const { riskScore, confidence, fakeProbability, realProbability, explanation } = props;
+  const {
+    riskScore,
+    confidence,
+    fakeProbability,
+    realProbability,
+    explanation,
+  } = props;
   return (
     <Card style={styles.metrics}>
-      <Metric label="Risk Score" value={`${riskScore}%`} accent={Colors.highRisk} />
-      <Metric label="Confidence" value={`${confidence}%`} accent={Colors.accent} />
-      <Metric label="AI Voice Probability" value={`${fakeProbability}%`} accent={Colors.highRisk} />
-      <Metric label="Genuine Voice Probability" value={`${realProbability}%`} accent={Colors.success} />
+      <Metric
+        label="Risk Score"
+        value={`${riskScore}%`}
+        accent={Colors.highRisk}
+      />
+      <Metric
+        label="Confidence"
+        value={`${confidence}%`}
+        accent={Colors.accent}
+      />
+      <Metric
+        label="AI Voice Probability"
+        value={`${fakeProbability}%`}
+        accent={Colors.highRisk}
+      />
+      <Metric
+        label="Genuine Voice Probability"
+        value={`${realProbability}%`}
+        accent={Colors.success}
+      />
       <Text style={styles.explanation}>{explanation}</Text>
     </Card>
   );
 }
 
-function Metric({ label, value, accent }: { label: string; value: string; accent: string }) {
+function Metric({
+  label,
+  value,
+  accent,
+}: {
+  label: string;
+  value: string;
+  accent: string;
+}) {
   return (
     <View style={styles.metricRow}>
       <View style={[styles.metricDot, { backgroundColor: accent }]} />
@@ -186,7 +225,11 @@ const styles = StyleSheet.create({
   metricRow: { flexDirection: "row", alignItems: "center", gap: 10 },
   metricDot: { width: 8, height: 8, borderRadius: 4 },
   metricLabel: { color: Colors.text, fontSize: 13, fontWeight: "700", flex: 1 },
-  metricValue: { fontSize: 14, fontWeight: "900", fontVariant: ["tabular-nums"] },
+  metricValue: {
+    fontSize: 14,
+    fontWeight: "900",
+    fontVariant: ["tabular-nums"],
+  },
   explanation: {
     color: Colors.textMuted,
     fontSize: 13,
@@ -196,8 +239,14 @@ const styles = StyleSheet.create({
     borderTopColor: Colors.borderSoft,
     paddingTop: Spacing.sm,
   },
+  reportTitleRow: { flexDirection: "row", alignItems: "center", gap: 8 },
   reportTitle: { color: Colors.text, fontSize: 15, fontWeight: "900" },
-  reportCopy: { color: Colors.textMuted, fontSize: 12, lineHeight: 19, marginTop: 4 },
+  reportCopy: {
+    color: Colors.textMuted,
+    fontSize: 12,
+    lineHeight: 19,
+    marginTop: 4,
+  },
   chipLabel: {
     color: Colors.textMuted,
     fontSize: 11,
@@ -230,7 +279,12 @@ const styles = StyleSheet.create({
     textAlignVertical: "top",
     fontSize: 13,
   },
-  error: { color: Colors.highRisk, fontSize: 12, fontWeight: "700", marginTop: Spacing.sm },
+  error: {
+    color: Colors.highRisk,
+    fontSize: 12,
+    fontWeight: "700",
+    marginTop: Spacing.sm,
+  },
   success: {
     backgroundColor: `${Colors.success}1A`,
     borderColor: `${Colors.success}4D`,

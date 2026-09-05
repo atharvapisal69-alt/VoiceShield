@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 
+import { Icon } from "@/components/Icon";
 import { Button } from "@/components/shared";
 import { Colors, Radius, Spacing } from "@/constants/colors";
 
@@ -16,7 +17,7 @@ export function RecordingCard({
   return (
     <View style={styles.wrap}>
       <View style={styles.icon}>
-        <Text style={styles.iconEmoji}>🎙️</Text>
+        <Icon name="microphone" size={34} color={Colors.highRisk} />
       </View>
       <Text style={styles.title}>Record a Voice</Text>
       <Text style={styles.copy}>
@@ -24,13 +25,15 @@ export function RecordingCard({
       </Text>
       <Button
         label="Start Recording"
-        icon="🔴"
+        icon="circle"
         variant="danger"
         onPress={onStart}
         disabled={disabled}
         style={styles.button}
       />
-      <Text style={styles.hint}>Recording only starts when you tap the button.</Text>
+      <Text style={styles.hint}>
+        Recording only starts when you tap the button.
+      </Text>
     </View>
   );
 }

@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 
 import { Button } from "@/components/shared";
+import { Icon, type IconName } from "@/components/Icon";
 import { Colors, Radius, Spacing } from "@/constants/colors";
 
 /**
@@ -13,7 +14,7 @@ export function EmptyState({
   actionLabel,
   onAction,
 }: {
-  icon: string;
+  icon: IconName;
   title: string;
   subtitle: string;
   actionLabel?: string;
@@ -22,7 +23,7 @@ export function EmptyState({
   return (
     <View style={styles.wrap}>
       <View style={styles.icon}>
-        <Text style={styles.iconEmoji}>{icon}</Text>
+        <Icon name={icon} size={28} color={Colors.primary} />
       </View>
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.subtitle}>{subtitle}</Text>

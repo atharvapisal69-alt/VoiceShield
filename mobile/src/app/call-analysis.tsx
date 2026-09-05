@@ -1,14 +1,21 @@
-import { useEffect, useRef, useState } from "react";
 import { router } from "expo-router";
+import { useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { CallTimeline } from "@/components/CallTimeline";
 import { CallWarning } from "@/components/CallWarning";
 import { Header } from "@/components/Header";
+import { Icon } from "@/components/Icon";
 import { LiveRiskIndicator } from "@/components/LiveRiskIndicator";
-import { BackButton, Button, Card, Screen, formatDuration } from "@/components/shared";
-import { CALL_TIME_SCALE } from "@/constants/config";
+import {
+  BackButton,
+  Button,
+  Card,
+  Screen,
+  formatDuration,
+} from "@/components/shared";
 import { Colors, Radius, Spacing } from "@/constants/colors";
+import { CALL_TIME_SCALE } from "@/constants/config";
 import { useAnalysis } from "@/context/AnalysisContext";
 import { useCallProtection } from "@/context/CallProtectionContext";
 
@@ -68,7 +75,10 @@ export default function CallAnalysisScreen() {
     const report = endCall();
     if (report) {
       addItem(report);
-      router.replace({ pathname: "/call-report", params: { id: report.id } } as never);
+      router.replace({
+        pathname: "/call-report",
+        params: { id: report.id },
+      } as never);
     } else {
       router.replace("/home" as never);
     }
@@ -78,17 +88,20 @@ export default function CallAnalysisScreen() {
     const report = endCall();
     if (report) {
       addItem(report);
-      router.replace({ pathname: "/call-report", params: { id: report.id } } as never);
+      router.replace({
+        pathname: "/call-report",
+        params: { id: report.id },
+      } as never);
     }
   };
 
   return (
     <Screen>
       <BackButton label="End & Exit" />
-      <Header title="Call in Progress" status="🟢 VoiceShield Protection" />
+      <Header title="Call in Progress" status="VoiceShield Protection" />
 
       <Card style={styles.callCard}>
-        <Text style={styles.callIcon}>📞</Text>
+        <Icon name="phone" size={38} color={Colors.primary} />
         <Text style={styles.duration}>
           {formatDuration(elapsedCallSeconds)}
         </Text>
@@ -118,13 +131,13 @@ export default function CallAnalysisScreen() {
         <Button
           label="Report Call"
           variant="secondary"
-          icon="🚩"
+          icon="flag"
           onPress={reportAndExit}
         />
         <Button
           label="End Call"
           variant="danger"
-          icon="⏹"
+          icon="stop"
           onPress={finishCall}
         />
       </View>
@@ -132,7 +145,10 @@ export default function CallAnalysisScreen() {
       <CallWarning
         visible={showWarning}
         score={currentRisk?.score ?? 0}
-        confidence={Math.min(97, 88 + Math.round((currentRisk?.score ?? 0) / 10))}
+        confidence={Math.min(
+          97,
+          88 + Math.round((currentRisk?.score ?? 0) / 10),
+        )}
         explanation="The analyzed voice contains characteristics that may be associated with synthetic or manipulated speech."
         onReport={reportAndExit}
         onDismiss={() => setDismissed(true)}
@@ -142,7 +158,12 @@ export default function CallAnalysisScreen() {
 }
 
 const styles = StyleSheet.create({
-  starting: { color: Colors.textMuted, fontSize: 15, textAlign: "center", marginTop: Spacing.xl },
+  starting: {
+    color: Colors.textMuted,
+    fontSize: 15,
+    textAlign: "center",
+    marginTop: Spacing.xl,
+  },
   callCard: { alignItems: "center", paddingVertical: Spacing.xl },
   callIcon: { fontSize: 38, marginBottom: Spacing.sm },
   duration: {

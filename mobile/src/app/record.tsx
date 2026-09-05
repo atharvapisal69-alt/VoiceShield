@@ -1,21 +1,35 @@
-import { useEffect, useState } from "react";
-import { Animated, Easing, Platform, StyleSheet, Text, View } from "react-native";
-import { router } from "expo-router";
 import { useAudioRecorder, useAudioRecorderState } from "expo-audio";
+import { router } from "expo-router";
+import { useEffect, useState } from "react";
+import {
+    Animated,
+    Easing,
+    Platform,
+    StyleSheet,
+    Text,
+    View,
+} from "react-native";
 
 import { AudioPlayer } from "@/components/AudioPlayer";
 import { Header } from "@/components/Header";
+import { Icon } from "@/components/Icon";
 import { PermissionCard } from "@/components/PermissionCard";
 import { RecordingCard } from "@/components/RecordingCard";
-import { BackButton, Button, Card, Screen, formatDuration } from "@/components/shared";
-import { Colors, Radius, Spacing } from "@/constants/colors";
 import {
-  RECORDING_FILE_NAME,
-  RECORDING_PRESET,
-  prepareAudioModeForPlayback,
-  prepareAudioModeForRecording,
-} from "@/services/recording";
+    BackButton,
+    Button,
+    Card,
+    Screen,
+    formatDuration,
+} from "@/components/shared";
+import { Colors, Radius, Spacing } from "@/constants/colors";
 import { requestMicrophonePermission } from "@/services/permissions";
+import {
+    RECORDING_FILE_NAME,
+    RECORDING_PRESET,
+    prepareAudioModeForPlayback,
+    prepareAudioModeForRecording,
+} from "@/services/recording";
 
 type Phase = "permission" | "idle" | "recording" | "ready";
 
@@ -108,7 +122,7 @@ export default function RecordScreen() {
       },
     } as never);
   };
-return (
+  return (
     <Screen>
       <BackButton />
       <Header
@@ -118,7 +132,7 @@ return (
 
       {phase === "permission" ? (
         <PermissionCard
-          icon="🎙️"
+          icon="microphone"
           title="Microphone access needed"
           description="VoiceShield uses your microphone only while you are recording."
           granted={false}
@@ -150,8 +164,7 @@ return (
                       {
                         scaleY: wave.interpolate({
                           inputRange: [0, 1],
-                          outputRange:
-                            index % 2 === 0 ? [0.55, 1] : [1, 0.55],
+                          outputRange: index % 2 === 0 ? [0.55, 1] : [1, 0.55],
                         }),
                       },
                     ],
@@ -166,7 +179,7 @@ return (
           <Button
             label="Stop Recording"
             variant="danger"
-            icon="⏹"
+            icon="stop"
             onPress={() => void stop()}
             style={styles.stopButton}
           />
@@ -175,18 +188,41 @@ return (
 
       {phase === "ready" && recordingUri ? (
         <Card style={styles.readyCard}>
-          <Text style={styles.readyKicker}>✓ AUDIO READY</Text>
+          <View style={styles.readyKickerRow}>
+            <Icon name="check" size={12} color={Colors.success} />
+            <Text style={styles.readyKicker}>AUDIO READY</Text>
+          </View>
           <Text style={styles.readyTitle}>Your recording</Text>
-          <Text style={styles.readyFile}>🎵 {RECORDING_FILE_NAME}</Text>
+          <View style={styles.readyFileRow}>
+            <Icon name="fileAudio" size={14} color={Colors.textMuted} />
+            <Text style={styles.readyFile}>{RECORDING_FILE_NAME}</Text>
+          </View>
           <Text style={styles.readyMeta}>
             Duration: {formatDuration(recordedDuration)}
           </Text>
           <AudioPlayer uri={recordingUri} />
           <View style={styles.readyRow}>
-            <Button label="Delete" variant="secondary" icon="🗑" onPress={reset} style={styles.flexButton} />
-            <Button label="Re-record" variant="secondary" icon="🔄" onPress={reset} style={styles.flexButton} />
+            <Button
+              label="Delete"
+              variant="secondary"
+              icon="trash"
+              onPress={reset}
+              style={styles.flexButton}
+            />
+            <Button
+              label="Re-record"
+              variant="secondary"
+              icon="rotateLeft"
+              onPress={reset}
+              style={styles.flexButton}
+            />
           </View>
-          <Button label="Analyze Audio" icon="🛡️" onPress={analyze} style={styles.stretchButton} />
+          <Button
+            label="Analyze Audio"
+            icon="shieldHalved"
+            onPress={analyze}
+            style={styles.stretchButton}
+          />
         </Card>
       ) : null}
 
@@ -195,7 +231,11 @@ return (
   );
 }
 const styles = StyleSheet.create({
-  recordingCard: { alignItems: "center", paddingVertical: Spacing.xl, marginTop: Spacing.lg },
+  recordingCard: {
+    alignItems: "center",
+    paddingVertical: Spacing.xl,
+    marginTop: Spacing.lg,
+  },
   recPill: {
     flexDirection: "row",
     alignItems: "center",
@@ -216,7 +256,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.9,
     shadowRadius: 8,
   },
-  recText: { color: Colors.highRisk, fontSize: 12, fontWeight: "900", letterSpacing: 1.2 },
+  recText: {
+    color: Colors.highRisk,
+    fontSize: 12,
+    fontWeight: "900",
+    letterSpacing: 1.2,
+  },
   timer: {
     color: Colors.text,
     fontSize: 44,
@@ -235,9 +280,26 @@ const styles = StyleSheet.create({
   micHint: { color: Colors.textMuted, fontSize: 12, marginTop: Spacing.lg },
   stopButton: { alignSelf: "stretch", marginTop: Spacing.lg },
   readyCard: { marginTop: Spacing.lg },
-  readyKicker: { color: Colors.success, fontSize: 11, fontWeight: "900", letterSpacing: 1.4 },
-  readyTitle: { color: Colors.text, fontSize: 20, fontWeight: "900", marginTop: 4 },
-  readyFile: { color: Colors.textMuted, fontSize: 13, marginTop: 8 },
+  readyKickerRow: { flexDirection: "row", alignItems: "center", gap: 6 },
+  readyKicker: {
+    color: Colors.success,
+    fontSize: 11,
+    fontWeight: "900",
+    letterSpacing: 1.4,
+  },
+  readyTitle: {
+    color: Colors.text,
+    fontSize: 20,
+    fontWeight: "900",
+    marginTop: 4,
+  },
+  readyFileRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginTop: 8,
+  },
+  readyFile: { color: Colors.textMuted, fontSize: 13 },
   readyMeta: { color: Colors.textMuted, fontSize: 12, marginTop: 4 },
   readyRow: { flexDirection: "row", gap: Spacing.sm },
   flexButton: { flex: 1 },

@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 
+import { Icon } from "@/components/Icon";
 import { RiskBadge, formatDateTime, formatDuration } from "@/components/shared";
 import { Colors, Radius, Spacing, riskColor } from "@/constants/colors";
 import type { CallReport } from "@/types/call";
@@ -14,7 +15,7 @@ export function CallReportCard({ report }: { report: CallReport }) {
     <View style={styles.card}>
       <View style={styles.topRow}>
         <View style={styles.icon}>
-          <Text style={styles.iconEmoji}>📞</Text>
+          <Icon name="phone" size={20} color={Colors.primary} />
         </View>
         <View style={{ flex: 1 }}>
           <Text style={styles.eyebrow}>VOICESHIELD CALL REPORT</Text>
