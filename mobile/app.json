@@ -34,7 +34,13 @@
         }
       ],
       "expo-image",
-      "expo-audio",
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "VoiceShield uses the microphone only while you are actively recording a voice sample.",
+          "enableBackgroundRecording": false
+        }
+      ],
       "expo-document-picker"
     ],
     "experiments": {

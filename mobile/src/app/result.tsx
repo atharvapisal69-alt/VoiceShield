@@ -1,145 +1,106 @@
-import { Button } from "@/components/button";
-import { Screen } from "@/components/screen";
-import { Colors } from "@/constants/theme";
 import { router, useLocalSearchParams } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
-export default function Result() {
-  const p = useLocalSearchParams<{
-    label: string;
-    risk_score: string;
-    confidence: string;
-    explanation: string;
-    fileName?: string;
-  }>();
-  const label = p.label ?? "LOW RISK";
-  const color = label.includes("HIGH")
-    ? Colors.red
-    : label.includes("MEDIUM")
-      ? Colors.orange
-      : Colors.green;
-  const score = Number(p.risk_score ?? 0);
-  const confidence = Number(p.confidence ?? 0);
+
+import { EmptyState } from "@/components/EmptyState";
+import { Header } from "@/components/Header";
+import { RiskMeter } from "@/components/RiskMeter";
+import { RiskScoreCard } from "@/components/RiskScoreCard";
+import { Button, Card, Screen, formatDateTime, formatDuration, riskColor } from "@/components/shared";
+import { Colors, Radius, Spacing } from "@/constants/colors";
+import { useAnalysis } from "@/context/AnalysisContext";
+
+export default function ResultScreen() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const { getItem } = useAnalysis();
+  const item = id ? getItem(id) : undefined;
+  const analysisItem = item && item.kind === "analysis" ? item : null;
+
+  if (!analysisItem) {
+    return (
+      <Screen>
+        <Header title="Analysis Result" />
+        <EmptyState
+          icon="🔍"
+          title="Result not found"
+          subtitle="This analysis may have been cleared from history."
+          actionLabel="Back to Home"
+          onAction={() => router.replace("/home" as never)}
+        />
+      </Screen>
+    );
+  }
+
+  const accent = riskColor(analysisItem.riskScore);
+
   return (
     <Screen>
-      <Text
-        style={styles.back}
-        onPress={() => router.replace("/home" as never)}
-      >
-        Home
-      </Text>
-      <Text style={styles.kicker}>ANALYSIS COMPLETE</Text>
-      <Text style={styles.title}>Your voice check</Text>
-      <Text style={styles.file}>{p.fileName ?? "Audio recording"}</Text>
-      <View style={[styles.risk, { borderColor: color }]}>
-        <Text style={[styles.label, { color }]}>{label}</Text>
-        <Text style={styles.big}>{(score * 100).toFixed(2)}%</Text>
-        <Text style={styles.small}>RISK SCORE</Text>
-        <View style={styles.riskTrack}>
-          <View
-            style={[
-              styles.riskFill,
-              { width: `${Math.max(score * 100, 2)}%`, backgroundColor: color },
-            ]}
-          />
-        </View>
+      <Header title="Voice Analysis Result" />
+
+      <Card style={styles.meterCard}>
+        <RiskMeter score={analysisItem.riskScore} />
+        <Text style={styles.fileName} numberOfLines={1}>
+          {analysisItem.fileName}
+        </Text>
+        <Text style={styles.fileMeta}>
+          {formatDateTime(analysisItem.createdAt)}
+          {analysisItem.duration
+            ? `  ·  ${formatDuration(analysisItem.duration)}`
+            : ""}
+        </Text>
+      </Card>
+
+      <View style={styles.sourceChip}>
+        <Text style={[styles.sourceChipText, { color: accent }]}>
+          {analysisItem.source === "recording" ? "🎙️ RECORDING" : "📁 UPLOAD"}
+        </Text>
       </View>
-      <View style={styles.metrics}>
-        <View>
-          <Text style={styles.metricValue}>
-            {(confidence * 100).toFixed(2)}%
-          </Text>
-          <Text style={styles.small}>CONFIDENCE</Text>
-          <View style={styles.confidenceTrack}>
-            <View
-              style={[styles.confidenceFill, { width: `${confidence * 100}%` }]}
-            />
-          </View>
-        </View>
-        <View>
-          <Text style={styles.metricValue}>
-            {label.includes("LOW") ? "CLEAR" : "REVIEW"}
-          </Text>
-          <Text style={styles.small}>RECOMMENDATION</Text>
-        </View>
-      </View>
-      <View style={styles.explanation}>
-        <Text style={styles.small}>WHY THIS RESULT</Text>
-        <Text style={styles.body}>{p.explanation}</Text>
-      </View>
+
+      <RiskScoreCard
+        label={analysisItem.label}
+        riskScore={analysisItem.riskScore}
+        confidence={analysisItem.confidence}
+        fakeProbability={analysisItem.fakeProbability}
+        realProbability={analysisItem.realProbability}
+        explanation={analysisItem.explanation}
+      />
+
       <Button
-        label="Scan another voice"
+        label="Analyze Another Voice"
+        icon="🛡️"
         onPress={() => router.replace("/home" as never)}
+        style={styles.primaryButton}
+      />
+      <Button
+        label="View History"
+        variant="secondary"
+        onPress={() => router.push("/history" as never)}
+        style={styles.secondaryButton}
       />
     </Screen>
   );
 }
+
 const styles = StyleSheet.create({
-  back: { color: Colors.muted, marginTop: 12, marginBottom: 38 },
-  kicker: {
-    color: Colors.cyan,
-    fontSize: 11,
-    fontWeight: "800",
-    letterSpacing: 2,
-  },
-  title: { color: Colors.text, fontSize: 30, fontWeight: "800", marginTop: 9 },
-  file: { color: Colors.muted, fontSize: 13, marginTop: 8 },
-  risk: {
-    backgroundColor: Colors.panel,
-    borderWidth: 1,
-    borderRadius: 22,
-    alignItems: "center",
-    paddingVertical: 30,
-    marginTop: 30,
-  },
-  label: { fontSize: 14, fontWeight: "900", letterSpacing: 2 },
-  big: { color: Colors.text, fontSize: 52, fontWeight: "800", marginTop: 14 },
-  small: {
-    color: Colors.muted,
-    fontSize: 10,
-    fontWeight: "800",
-    letterSpacing: 1.2,
-    marginTop: 5,
-  },
-  metrics: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    paddingVertical: 24,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.border,
-  },
-  metricValue: {
+  meterCard: { alignItems: "center", paddingVertical: Spacing.lg },
+  fileName: {
     color: Colors.text,
-    fontSize: 20,
+    fontSize: 15,
     fontWeight: "800",
-    textAlign: "center",
+    marginTop: Spacing.sm,
+    maxWidth: 320,
   },
-  explanation: {
-    backgroundColor: Colors.panel,
-    borderRadius: 16,
-    padding: 18,
-    marginVertical: 24,
+  fileMeta: { color: Colors.textMuted, fontSize: 12, marginTop: 4 },
+  sourceChip: {
+    alignSelf: "center",
+    backgroundColor: Colors.cardRaised,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: Radius.pill,
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    marginVertical: Spacing.md,
   },
-  body: { color: Colors.text, lineHeight: 22, fontSize: 14, marginTop: 10 },
-  riskTrack: {
-    width: "78%",
-    height: 5,
-    borderRadius: 3,
-    backgroundColor: Colors.border,
-    marginTop: 18,
-    overflow: "hidden",
-  },
-  riskFill: { height: "100%", borderRadius: 3 },
-  confidenceTrack: {
-    width: 110,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: Colors.border,
-    marginTop: 10,
-    overflow: "hidden",
-  },
-  confidenceFill: {
-    height: "100%",
-    borderRadius: 2,
-    backgroundColor: Colors.cyan,
-  },
+  sourceChipText: { fontSize: 10, fontWeight: "900", letterSpacing: 1.2 },
+  primaryButton: { marginTop: Spacing.lg },
+  secondaryButton: { marginTop: Spacing.sm },
 });

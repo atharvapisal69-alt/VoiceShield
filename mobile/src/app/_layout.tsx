@@ -1,18 +1,25 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import { Colors } from "@/constants/theme";
+import { AnalysisProvider } from "@/context/AnalysisContext";
+import { CallProtectionProvider } from "@/context/CallProtectionContext";
+import { Colors } from "@/constants/colors";
 
 export default function RootLayout() {
   return (
-    <>
-      <StatusBar style="light" />
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          contentStyle: { backgroundColor: Colors.ink },
-        }}
-      />
-    </>
+    <SafeAreaProvider>
+      <AnalysisProvider>
+        <CallProtectionProvider>
+          <StatusBar style="light" />
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              contentStyle: { backgroundColor: Colors.dark },
+            }}
+          />
+        </CallProtectionProvider>
+      </AnalysisProvider>
+    </SafeAreaProvider>
   );
 }
