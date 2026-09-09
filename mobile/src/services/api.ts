@@ -9,9 +9,7 @@ import type {
 
 import type { ReportCategory } from "@/types/call";
 
-
 const { API_URL, MOCK_MODE } = CONFIG;
-
 
 // =====================================================
 // MOCK / DEMO HELPERS
@@ -19,7 +17,6 @@ const { API_URL, MOCK_MODE } = CONFIG;
 
 const delay = (ms: number) =>
   new Promise<void>((resolve) => setTimeout(resolve, ms));
-
 
 function deterministicSeed(text: string): number {
   let hash = 0;
@@ -30,7 +27,6 @@ function deterministicSeed(text: string): number {
 
   return Math.abs(hash);
 }
-
 
 const EXPLANATIONS: Record<string, string> = {
   HIGH:
@@ -43,44 +39,28 @@ const EXPLANATIONS: Record<string, string> = {
     "The analyzed voice shows characteristics consistent with genuine human speech.",
 };
 
-
 // =====================================================
 // MOCK RESULT
 // =====================================================
 
 function mockResultForFile(file: AudioFile): ApiAnalyzeResponse {
   const seed = deterministicSeed(file.name);
-
   const score = 20 + (seed % 70);
 
   const label = toRiskLevel(
-    score >= 80
-      ? "HIGH"
-      : score >= 50
-      ? "MEDIUM"
-      : "LOW"
+    score >= 80 ? "HIGH" : score >= 50 ? "MEDIUM" : "LOW",
   );
 
   return {
     success: true,
-
     label,
-
     risk_score: score,
-
     confidence: 90,
-
     fake_probability: score,
-
-    real_probability: Math.max(
-      0,
-      100 - score
-    ),
-
-    explanation: EXPLANATIONS[label],
+    real_probability: Math.max(0, 100 - score),
+    explanation: EXPLANATIONS[label] ?? "Voice analysis completed.",
   };
 }
-
 
 // =====================================================
 // REAL AUDIO ANALYSIS
@@ -96,6 +76,7 @@ export async function analyzeAudio(
   console.log("Audio Name:", file.name);
   console.log("Audio MIME:", file.mimeType);
 
+  // MOCK MODE
   if (MOCK_MODE || !API_URL) {
     console.log("Running MOCK MODE");
 
@@ -104,6 +85,7 @@ export async function analyzeAudio(
     return mockResultForFile(file);
   }
 
+  // REAL BACKEND
   return new Promise<ApiAnalyzeResponse>((resolve, reject) => {
     const xhr = new XMLHttpRequest();
 
@@ -117,49 +99,92 @@ export async function analyzeAudio(
         try {
           const backendData = JSON.parse(xhr.responseText);
 
+          /*
+            Expected Backend Response:
+
+            {
+              success: true,
+              filename: "...",
+              analysis: {
+                prediction: "AI_GENERATED",
+                confidence: 99.34,
+                risk_level: "HIGH",
+                probabilities: {
+                  real: 0.66,
+                  ai_generated: 99.34
+                },
+                recommendation: "..."
+              }
+            }
+          */
+
           const analysis = backendData.analysis || backendData;
+
+          // =================================================
+          // EXTRACT RISK LEVEL
+          // =================================================
+
+          const rawRiskLevel =
+            analysis.risk_level ||
+            analysis.label ||
+            analysis.risk ||
+            "LOW";
+
+          const label = toRiskLevel(rawRiskLevel);
+
+          // =================================================
+          // EXTRACT PROBABILITIES
+          // =================================================
+
+          const probabilities = analysis.probabilities || {};
+
+          const fakeProbability = Number(
+            probabilities.ai_generated ??
+              probabilities.fake ??
+              analysis.fake_probability ??
+              analysis.risk_score ??
+              analysis.score ??
+              0,
+          );
+
+          const realProbability = Number(
+            probabilities.real ??
+              analysis.real_probability ??
+              Math.max(0, 100 - fakeProbability),
+          );
+
+          // =================================================
+          // RISK SCORE
+          // =================================================
+
+          const riskScore = Number(
+            analysis.risk_score ??
+              fakeProbability,
+          );
+
+          // =================================================
+          // FINAL FRONTEND RESPONSE
+          // =================================================
 
           const result: ApiAnalyzeResponse = {
             success: true,
 
-            label: toRiskLevel(
-              analysis.label ||
-                analysis.risk_level ||
-                analysis.risk ||
-                "LOW",
-            ),
+            label,
 
-            risk_score: Number(
-              analysis.risk_score ??
-                analysis.fake_probability ??
-                analysis.score ??
-                0,
-            ),
+            risk_score: riskScore,
 
             confidence: Number(
-              analysis.confidence ?? 0,
+              analysis.confidence ?? fakeProbability,
             ),
 
-            fake_probability: Number(
-              analysis.fake_probability ??
-                analysis.risk_score ??
-                analysis.score ??
-                0,
-            ),
+            fake_probability: fakeProbability,
 
-            real_probability: Number(
-              analysis.real_probability ??
-                100 -
-                  Number(
-                    analysis.fake_probability ??
-                      analysis.risk_score ??
-                      analysis.score ??
-                      0,
-                  ),
-            ),
+            real_probability: realProbability,
 
             explanation:
+              analysis.recommendation ||
               analysis.explanation ||
+              EXPLANATIONS[label] ||
               "Voice analysis completed successfully.",
           };
 
@@ -169,6 +194,7 @@ export async function analyzeAudio(
           );
 
           resolve(result);
+
         } catch (error) {
           console.error(
             "Response parsing error:",
@@ -181,6 +207,7 @@ export async function analyzeAudio(
             ),
           );
         }
+
       } else {
         reject(
           new Error(
@@ -198,16 +225,32 @@ export async function analyzeAudio(
       );
     };
 
+    xhr.ontimeout = () => {
+      reject(
+        new Error(
+          "Request timed out. Backend took too long to respond.",
+        ),
+      );
+    };
+
+    // 2 minute timeout for AI analysis
+    xhr.timeout = 120000;
+
     const formData = new FormData();
+
+    const mimeType =
+      file.mimeType ||
+      getMimeTypeFromFileName(file.name);
 
     // React Native native file object
     const fileData: any = {
       uri: file.uri,
       name: file.name || "audio.opus",
-      type: file.mimeType || "audio/opus",
+      type: mimeType,
     };
 
-    // Backend expects: file
+    // IMPORTANT:
+    // Backend expects UploadFile parameter named "file"
     formData.append("file", fileData);
 
     console.log(
@@ -227,113 +270,53 @@ export async function analyzeCallAudio(
     uri?: string;
     mimeType?: string;
   },
-
-  score?: number
-
+  score?: number,
 ): Promise<ApiCallAnalyzeResponse> {
-
 
   const targetScore =
     score ??
     (20 +
-      (
-        deterministicSeed(
-          chunk.uri ??
-          String(Date.now())
-        ) % 70
-      ));
-
+      (deterministicSeed(
+        chunk.uri ?? String(Date.now()),
+      ) %
+        70));
 
   const label = toRiskLevel(
-
     targetScore >= 80
       ? "HIGH"
       : targetScore >= 50
       ? "MEDIUM"
-      : "LOW"
-
+      : "LOW",
   );
 
-
-  // Demo mode for call analysis
-
-  if (MOCK_MODE || !API_URL) {
-
-    await delay(700);
-
-    return {
-
-      success: true,
-
-      call_id:
-        `call_${Date.now().toString(36)}`,
-
-      result: {
-
-        label,
-
-        risk_score:
-          targetScore,
-
-        confidence:
-          90,
-
-        fake_probability:
-          targetScore,
-
-        real_probability:
-          Math.max(
-            0,
-            100 - targetScore
-          ),
-
-        explanation:
-          EXPLANATIONS[label],
-
-      },
-
-    };
-
-  }
-
-
-  // Real backend implementation can be added later
+  // Demo implementation
+  await delay(700);
 
   return {
-
     success: true,
 
-    call_id:
-      `call_${Date.now().toString(36)}`,
+    call_id: `call_${Date.now().toString(36)}`,
 
     result: {
-
       label,
 
-      risk_score:
-        targetScore,
+      risk_score: targetScore,
 
-      confidence:
-        90,
+      confidence: 90,
 
-      fake_probability:
-        targetScore,
+      fake_probability: targetScore,
 
-      real_probability:
-        Math.max(
-          0,
-          100 - targetScore
-        ),
+      real_probability: Math.max(
+        0,
+        100 - targetScore,
+      ),
 
       explanation:
-        EXPLANATIONS[label],
-
+        EXPLANATIONS[label] ??
+        "Call analysis completed.",
     },
-
   };
-
 }
-
 
 // =====================================================
 // REPORT SUSPICIOUS CALL
@@ -341,101 +324,67 @@ export async function analyzeCallAudio(
 
 export async function reportCall(
   payload: {
-
     callId: string;
-
     category: ReportCategory;
-
     notes?: string;
-
-  }
-
+  },
 ): Promise<{ success: boolean }> {
 
-
   if (MOCK_MODE || !API_URL) {
-
     await delay(500);
 
     return {
-      success: true
+      success: true,
     };
-
   }
 
-
   try {
+    const response = await fetch(
+      `${API_URL}/api/v1/call/report`,
+      {
+        method: "POST",
 
-    const response =
-      await fetch(
-        `${API_URL}/api/v1/call/report`,
-        {
+        headers: {
+          "Content-Type": "application/json",
+        },
 
-          method: "POST",
-
-          headers: {
-
-            "Content-Type":
-              "application/json",
-
-          },
-
-          body:
-            JSON.stringify(payload),
-
-        }
-      );
-
+        body: JSON.stringify(payload),
+      },
+    );
 
     if (!response.ok) {
-
       throw new Error(
-        `Report failed (${response.status})`
+        `Report failed (${response.status})`,
       );
-
     }
-
 
     return await response.json();
 
-  }
-
-  catch (error) {
-
+  } catch (error) {
     console.error(
       "Call Report Error:",
-      error
+      error,
     );
 
     throw error;
-
   }
-
 }
-
 
 // =====================================================
 // BACKEND STATUS
 // =====================================================
 
 export function isBackendLive(): boolean {
-
-  return (
-    !MOCK_MODE &&
-    API_URL.length > 0
-  );
-
+  return !MOCK_MODE && API_URL.length > 0;
 }
-
 
 // =====================================================
 // MIME TYPE HELPER
 // =====================================================
 
 function getMimeTypeFromFileName(
-  fileName?: string
+  fileName?: string,
 ): string {
-
 
   const extension =
     fileName
@@ -443,9 +392,7 @@ function getMimeTypeFromFileName(
       .pop()
       ?.toLowerCase();
 
-
   switch (extension) {
-
     case "wav":
       return "audio/wav";
 
@@ -469,7 +416,5 @@ function getMimeTypeFromFileName(
 
     default:
       return "audio/*";
-
   }
-
 }
