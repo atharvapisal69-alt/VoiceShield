@@ -1,42 +1,57 @@
 import * as DocumentPicker from "expo-document-picker";
 
 import type { AudioFile } from "@/types/analysis";
-
-/**
- * Audio file selection via the OS document picker.
- * Only voice/audio formats are offered to the user.
- */
-
-const AUDIO_MIME_TYPES = [
-  "audio/*",
-  "audio/wav",
-  "audio/x-wav",
-  "audio/mpeg",
-  "audio/mp3",
-  "audio/mp4",
-  "audio/x-m4a",
-  "audio/ogg",
-  "application/ogg",
-];
+import { SUPPORTED_FORMATS } from "@/constants/config";
 
 export async function pickAudioFile(): Promise<AudioFile | null> {
   try {
     const result = await DocumentPicker.getDocumentAsync({
-      type: AUDIO_MIME_TYPES,
+      type: "audio/*",
       copyToCacheDirectory: true,
       multiple: false,
     });
 
-    if (result.canceled || result.assets.length === 0) return null;
+    if (result.canceled) {
+      return null;
+    }
 
-    const asset = result.assets[0];
+    const asset = result.assets?.[0];
+
+    if (!asset) {
+      return null;
+    }
+
+    const fileName = asset.name || "audio.opus";
+
+    const extension =
+      "." + fileName.split(".").pop()?.toLowerCase();
+
+    if (!SUPPORTED_FORMATS.includes(extension)) {
+      throw new Error(
+        `Unsupported audio format: ${extension}. Supported formats: ${SUPPORTED_FORMATS.join(", ")}`,
+      );
+    }
+
     return {
       uri: asset.uri,
-      name: asset.name,
-      mimeType: asset.mimeType ?? undefined,
-      size: asset.size ?? undefined,
+      name: fileName,
+      mimeType: asset.mimeType ?? getMimeType(extension),
+      size: asset.size,
     };
-  } catch {
-    return null;
+  } catch (error) {
+    console.error("Audio picker error:", error);
+    throw error;
   }
+}
+
+function getMimeType(extension: string): string {
+  const mimeTypes: Record<string, string> = {
+    ".wav": "audio/wav",
+    ".mp3": "audio/mpeg",
+    ".m4a": "audio/mp4",
+    ".ogg": "audio/ogg",
+    ".opus": "audio/opus",
+  };
+
+  return mimeTypes[extension] ?? "application/octet-stream";
 }
